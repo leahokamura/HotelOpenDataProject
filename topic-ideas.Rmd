@@ -1,6 +1,6 @@
 ---
 title: "Topic ideas"
-author: "Team Name: Team member 1, Team member 2, Team member 3, Team member 4"
+author: "LAM-duh: Xuliang Deng, Leah Okamura, Megan Richards"
 date: "Update date"
 output: pdf_document
 ---
@@ -21,7 +21,7 @@ library(tidyverse)
 # load all data sets 
 ```
 
-# Data Set 1
+# Data Set 1 - AKIRA
 
 ## Introduction and Data
 
@@ -33,7 +33,7 @@ library(tidyverse)
 
 
 
-# Data Set 2
+# Data Set 2 - MEGAN
 
 ## Introduction and Data
 
@@ -45,8 +45,7 @@ library(tidyverse)
 
 
 
-# Data Set 3
-
+# Data Set 3 - LEAH
 ## Introduction and Data
 
 (Introduce and discuss data here)
@@ -59,20 +58,20 @@ library(tidyverse)
 
 # Glimpse of data sets
 
-## Data set 1
+## Data set 1 - AKIRA
 
 ```{r glimpse-1}
 
 ```
 
-## Data set 2
+## Data set 2 - MEGAN
 
 ```{r glimpse-2}
 
 ```
 
 
-## Data set 3
+## Data set 3 - LEAH
 
 ```{r glimpse-3}
 
