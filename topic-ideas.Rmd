@@ -1,7 +1,7 @@
 ---
 title: "Topic ideas"
 author: "LAM-duh: Xuliang Deng, Leah Okamura, Megan Richards"
-date: "Update date"
+date: "Oct 11th, 2021"
 output: pdf_document
 ---
 
@@ -39,8 +39,10 @@ We would like to see if there are any differences in the means of attack, defens
 
 ## Introduction and Data
 
-This dataset contains information on the contribution of individual schools to the racial and ethnic segregation of US school districts, collected by the Urban Institute.The Segregation Contribution Index (SCI) measures the share of school district segregation attributable to a given school. The SCI is computed using public data on school enrollment by race and ethnicity from the US Department of Education’s Common Core of Data and the Private School Survey for the 2017–18 school year. It was found 
-at https://datacatalog.urban.org/dataset/index-school-contribution-racial-segregation-us-school-districts. 
+This dataset is found at  https://datacatalog.urban.org/dataset/index-school-contribution-racial-segregation-us-school-districts, and is available through the Urban Institute. It contains information on the contribution of individual schools to the racial and ethnic segregation of US school districts using the SCI. The Segregation Contribution Index (SCI) measures the share of school district segregation attributable to a given school. The SCI is computed using public data on school enrollment by race and ethnicity from the US Department of Education’s Common Core of Data and the Private School Survey for the 2017–18 school year. It contains the following variables of interest:
+
+School Level, Longitude of school location, Latitutde of school location, Charter School Indicator, Private School Indicator, Magnet School Indicator, Traditional Public School (TPS) indicator, Total school enrollment, Black and Hispanic school enrollment, Size of School, Neighborhood Radius (miles), Number of neighborhood schools serving same grades, Total enrollemnt in neighborhood, Black and Hispanic school enrollment in neighborhood, Urban school indicator (NCES), Suburban school indicator (NCES), Town / Rural school indicator (NCES), 
+Segregation Contribution Index (SCI). 
 
 ## Research questions 
 We are interested in investigating how well the following factors predict the the SCI (Segregation
