@@ -24,7 +24,7 @@ hotels <- read_csv("data/hotels_reduced.csv")
 schools <- read_csv("data/US_School_Racial_Segregation.csv")
 ```
 
-# Data Set 1 - XULIANG
+# Data Set 1
 
 ## Introduction and Data
 
@@ -34,17 +34,16 @@ The dataset we are using is from https://github.com/ayoubimaya/pokemon and is so
 
 We would like to see if there are any differences in the means of attack, defense, HP, based on each type using an ANOVA test. We are the interested in seeing how these means might differ to each other through hypothesis testing. We are also interested in analyzing how variables such as attack, defense, and speed may affect the total points assigned to a specific pokemon.
 
-
-# Data Set 2 - MEGAN
+# Data Set 2
 
 ## Introduction and Data
 
 This dataset is found at  https://datacatalog.urban.org/dataset/index-school-contribution-racial-segregation-us-school-districts, and is available through the Urban Institute. It contains information on the contribution of individual schools to the racial and ethnic segregation of US school districts using the SCI. The Segregation Contribution Index (SCI) measures the share of school district segregation attributable to a given school. The SCI is computed using public data on school enrollment by race and ethnicity from the US Department of Education’s Common Core of Data and the Private School Survey for the 2017–18 school year. It contains the following variables of interest:
 
-School Level, Longitude of school location, Latitutde of school location, Charter School Indicator, Private School Indicator, Magnet School Indicator, Traditional Public School (TPS) indicator, Total school enrollment, Black and Hispanic school enrollment, Size of School, Neighborhood Radius (miles), Number of neighborhood schools serving same grades, Total enrollemnt in neighborhood, Black and Hispanic school enrollment in neighborhood, Urban school indicator (NCES), Suburban school indicator (NCES), Town / Rural school indicator (NCES), 
-Segregation Contribution Index (SCI). 
+School Level, Longitude of school location, Latitutde of school location, Charter School Indicator, Private School Indicator, Magnet School Indicator, Traditional Public School (TPS) indicator, Total school enrollment, Black and Hispanic school enrollment, Size of School, Neighborhood Radius (miles), Number of neighborhood schools serving same grades, Total enrollment in neighborhood, Black and Hispanic school enrollment in neighborhood, Urban school indicator (NCES), Suburban school indicator (NCES), Town / Rural school indicator (NCES), Segregation Contribution Index (SCI). 
 
 ## Research questions 
+
 We are interested in investigating how well the following factors predict the the SCI (Segregation
 Contribution Index), which is a measure of the share of a school district's segregation that 
 is attributable to the school: 
@@ -61,7 +60,7 @@ is attributable to the school:
 We are also interested in comparing the mean SCI for the grouped variables (such as 
 urban/suburban/rural), and conducting ANOVA tests to evaluate group variance. 
 
-# Data Set 3 - LEAH
+# Data Set 3
 
 ## Introduction and Data
 
@@ -72,24 +71,21 @@ This data set comes from an open hotel booking demand dataset from Antonio, Alme
 
 A research question we are interested in is how do factors such as type of hotel and type of guest affect the average daily rate for a hotel. We would also be interested in seeing how stays in the weekend or the weekday may affect the average daily rate for a hotel, and if they differ between the two hotel types, City and Resort hotels.
 
-
 # Glimpse of data sets
 
-## Data set 1 - XULIANG
+## Data set 1
 
 ```{r glimpse-1}
 glimpse(pokemon)
 ```
 
-
-## Data set 2 - MEGAN
+## Data set 2
 
 ```{r glimpse-2}
 glimpse(schools)
 ```
 
-
-## Data set 3 - LEAH
+## Data set 3
 
 ```{r glimpse-3}
 glimpse(hotels)
