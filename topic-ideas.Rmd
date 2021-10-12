@@ -21,7 +21,7 @@ library(tidyverse)
 # load all data sets 
 pokemon <- read_csv('data/Pokemon.csv')
 hotels <- read_csv("data/hotels_reduced.csv")
-
+schools <- read_csv("data/US_School_Racial_Segregation.csv")
 ```
 
 # Data Set 1 - XULIANG
@@ -39,13 +39,25 @@ We would like to see if there are any differences in the means of attack, defens
 
 ## Introduction and Data
 
-(Introduce and discuss data here)
+This dataset contains information on the contribution of individual schools to the racial and ethnic segregation of US school districts, collected by the Urban Institute.The Segregation Contribution Index (SCI) measures the share of school district segregation attributable to a given school. The SCI is computed using public data on school enrollment by race and ethnicity from the US Department of Education’s Common Core of Data and the Private School Survey for the 2017–18 school year. It was found 
+at https://datacatalog.urban.org/dataset/index-school-contribution-racial-segregation-us-school-districts. 
 
 ## Research questions 
+We are interested in investigating how well the following factors predict the the SCI (Segregation
+Contribution Index), which is a measure of the share of a school district's segregation that 
+is attributable to the school: 
+- location (longitude and latitute), 
+- school status (charter, private, magnet)
+- school population 
+- demographic make-up 
+- the neighborhood radius
+- the number of district schools with the same grading scores
+- the neighborhood population
+- the demographic make-up of the school district neighborhood 
+- the region of the school (urban, suburban, rural)
 
-(Discuss research questions here)
-
-
+We are also interested in comparing the mean SCI for the grouped variables (such as 
+urban/suburban/rural), and conducting ANOVA tests to evaluate group variance. 
 
 # Data Set 3 - LEAH
 
@@ -71,7 +83,7 @@ glimpse(pokemon)
 ## Data set 2 - MEGAN
 
 ```{r glimpse-2}
-
+glimpse(schools)
 ```
 
 
