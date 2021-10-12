@@ -28,14 +28,12 @@ hotels <- read_csv("data/hotels_reduced.csv")
 
 ## Introduction and Data
 
-(Introduce and discuss data here)
-"Pokemon"
-https://github.com/ayoubimaya/pokemon
-The dataset is sourced from https://www.pokemon.com/us/pokedex/, which is the official Pokemon database. The general characteristics being measured in the data are the name, type, and characteristics of each Pokemon. 
+The dataset we are using is from https://github.com/ayoubimaya/pokemon and is sourced from https://www.pokemon.com/us/pokedex/, which is the official Pokemon open database. In this dataset, every observation is a specfic pokemon from the pokedex. The general characteristics being measured in the data are the name, type, and characteristics of each Pokemon. More specifically, some variables that we are interested in are Attack, HP, Defense, Speed, and the Pokemon type.
+
 ## Research questions 
 
-(Discuss research questions here)
-We would like to see how manager salary is influenced or differs depending on other factors such as places managers live in, age, years in the job, highest level of education, gender, industry, and race. Since the data is not clean, for instance for race, we can only compare white to anything else. Race can be "African American or Asian American" and it might be hard to filter data.
+We would like to see if there are any differences in the means of attack, defense, HP, based on each type using an ANOVA test. We are the interested in seeing how these means might differ to each other through hypothesis testing. We are also interested in analyzing how variables such as attack, defense, and speed may affect the total points assigned to a specific pokemon.
+
 
 # Data Set 2 - MEGAN
 
@@ -50,6 +48,7 @@ We would like to see how manager salary is influenced or differs depending on ot
 
 
 # Data Set 3 - LEAH
+
 ## Introduction and Data
 
 The source of the dataset is Tiny Tuesday, https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-11/readme.md.
