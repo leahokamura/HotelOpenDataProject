@@ -11,9 +11,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction 
 
- djkhijdshhfsd
- 
- ewuserhusge
+We are interested in studying the characteristics of hotel room reservations in the United States - particularly looking at predictors of the price of a hotel reservation. There are several significant points of relevance for 
+understanding these relationships: understanding predictors of room cost could be used to help identify 
+where new hotels could be successfully created, allow travelers to plan financially for future travel.
+
+Generally, we are looking to use linear models to understand the contributing factors to hotel 
+room price, as well as identify the strongest predictors. We hypothesize that a model with 
+predictors of hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status, will be a statistically significant 
+predictor of hotel room price, and that the predictors will be significant except for company and 
+number of adults/children/babies. 
+
 
 ## Data Description
 
