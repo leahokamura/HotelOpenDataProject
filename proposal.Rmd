@@ -22,7 +22,19 @@ This data set comes from an open hotel booking demand dataset from Antonio, Alme
 
 ## Analysis Approach
 
+In this section, you will provide a brief overview of your analysis approach. This includes:
+
+Description of the response variable.
+Visualization and summary statistics for the response variable.
+List of variables that will be considered as predictors
+Regression model technique (multiple linear regression and logistic regression)
+
+The response variable is adr, average daily rate which is define as by dividing the sum of all lodging transactions by the total number of staying nights. 
+We are going to use 
+
 A research question we are interested in is how do factors such as type of hotel and type of guest affect the average daily rate for a hotel. We would also be interested in seeing how stays in the weekend or the weekday may affect the average daily rate for a hotel, and if they differ between the two hotel types, City and Resort hotels.
 
+weekend or weekday, number of hotel guests, 
 
+##
 
