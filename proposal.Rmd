@@ -37,7 +37,8 @@ List of variables that will be considered as predictors
 Regression model technique (multiple linear regression and logistic regression)
 
 The response variable is adr, average daily rate which is define as by dividing the sum of all lodging transactions by the total number of staying nights. 
-We are going to use 
+We are going to use hotel (Resort Hotel or City Hotel), reserved_room_type, assigned_room_type, company, meal(type of meal), reservation_status. For example, 
+if the reservation_status is canceled or no-show, the price can be expected to be cheap because that is an indicator of hotel being not popular and the room is also cheap, which does not stop customoers from cancelling. Meal plan and hotel type (Resort Hotel or City Hotel) can indicate how much hotel could cost. We can also use reserved_room_type or assigned_room_type 
 
 A research question we are interested in is how do factors such as type of hotel and type of guest affect the average daily rate for a hotel. We would also be interested in seeing how stays in the weekend or the weekday may affect the average daily rate for a hotel, and if they differ between the two hotel types, City and Resort hotels.
 
