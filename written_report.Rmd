@@ -80,18 +80,27 @@ x = "")
 We can see that most of the people use bed and breakfast plan (BB) rather than half board or full board (HB and SC). Only few people chose no meal (undefined). 
 
 ```{r}
-ggplot(data = hotels, aes(x = assigned_room_type)) +
-geom_bar() +
-labs(title = "Distribution of penguin species",
-x = "")
+hotels %>%
+  group_by(meal) %>%
+  summarise(n = n(), mean = mean(adr), sd = sd(adr)) %>%
+  kable(digits = 3)
 ```
 
 ```{r}
-ggplot(data = hotels, aes(x = reserved_room_type)) +
+ggplot(data = hotels, aes(x = reservation_status)) +
 geom_bar() +
-labs(title = "Distribution of reserved room type",
+labs(title = "Distribution of reservation status",
 x = "") 
 ```
+
+```{r}
+hotels %>%
+  group_by(hotel) %>%
+  summarise(n = n(), mean = mean(adr), sd = sd(adr)) %>%
+  kable(digits = 3)
+```
+We can see that resort hotel is more expensive and most of the users use city hotels.
+
 ## Methodology
 INSTRUCTIONS: This section includes a brief description of your modeling process. Explain the reasoning for the type of model you’re fitting, predictor variables considered for the model including any interactions. Additionally, show how you arrived at the final model by describing the model selection process, any variable transformations (if needed), and any other relevant considerations that were part of the model fitting process.
 
@@ -108,6 +117,9 @@ We plan to use multiple linear regression with a variety of combinations of inte
 
 ### Modeling Code (Hide code with echo = False!)
 ```{r modeling}
+model <- lm(adr ~  hotel + meal + reservation_status, data = hotels)
+tidy(model, conf.int = TRUE) %>%
+kable(digits = 3)
 
 ```
 
