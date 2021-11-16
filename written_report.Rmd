@@ -1,0 +1,33 @@
+---
+title: "Project (REPLACE WITH TITLE)"
+author: "LAM-duh: Xuliang Deng, Leah Okamura, Megan Richards"
+date: "Nov 15th, 2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load-packages}
+library(tidyverse)
+library(broom)
+library(knitr)
+``` 
+
+```{r load-data}
+hotels <- read_csv("data/hotels_reduced.csv")
+```
+
+## Introduction and Data
+INSTRUCTIONS: This section includes an introduction to the project motivation, data, and research question. Describe the data and definitions of key variables. It should also include some exploratory data analysis. All of the EDA won’t fit in the paper, so focus on the EDA for the response variable and a few other interesting variables and relationships.
+
+### Introduction 
+
+With the lifting of travel restrictions into the U.S. (https://www.nytimes.com/2021/09/22/travel/us-international-travel-vaccine.html) through the implementation of new travel guidelines, we believe that the booking of hotels may start to increase. Therefore, with the slower return to travel and society pre covid, we are interested in studying the characteristics of hotel room reservations in the United States. Specifically, we are interested in what relationship these characteristics have the cost of a hotel.Our general research question is; How do the characteristics of a hotel booking affect the daily cost of a hotel stay in the United States? We believe there will be several significant points of relevance for understanding these relationships: understanding predictors of room cost could be used to help identify where new hotels could be successfully created, allow travelers to plan financially for future travel.
+
+Generally, we are looking to use linear models to understand the contributing factors to hotel 
+room price, as well as identify the strongest predictors. We hypothesize that a model with 
+predictors of hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status, will be statistically significant predictor of hotel room price, and that the predictors will be significant except for company and number of adults/children/babies. 
+
+
