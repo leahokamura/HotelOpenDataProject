@@ -26,16 +26,15 @@ INSTRUCTIONS: This section includes an introduction to the project motivation, d
 
 With the lifting of travel restrictions into the U.S. (https://www.nytimes.com/2021/09/22/travel/us-international-travel-vaccine.html) through the implementation of new travel guidelines, we believe that the booking of hotels may start to increase. Therefore, with the slower return to travel and society pre covid, we are interested in studying the characteristics of hotel room reservations in the United States. Specifically, we are interested in what relationship these characteristics have the cost of a hotel.Our general research question is; How do the characteristics of a hotel booking affect the daily cost of a hotel stay in the United States? We believe there will be several significant points of relevance for understanding these relationships: understanding predictors of room cost could be used to help identify where new hotels could be successfully created, allow travelers to plan financially for future travel.
 
-Generally, we are looking to use linear models to understand the contributing factors to hotel room price, as well as identify the strongest predictors. We hypothesize that a model with 
-predictors of hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status, will be statistically significant predictor of hotel room price, and that the predictors will be significant except for company and number of adults/children/babies. 
+In this report, we are looking to use linear models to understand the contributing facors to hotel room price, as well as identify the strongest predictors.
 
 ### Data 
 
 The source of the dataset is Tiny Tuesday, https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-11/readme.md.
-This data set was originally collected from an open hotel booking demand dataset from Antonio, Almeida and Nunes, 2019. The data collected from hotels all around the world ranges from bookings in 2015 to 2017. It is sourced from this study https://www.sciencedirect.com/science/article/pii/S2352340918315191#f0010. Due to the dataset being over 100,000 observations, we have limited the observations to be only hotels from the US. The general characteristics being measured in the data are the different aspects of booking and staying at a hotel. For example, out of the 32 variables, some of the ones we find great interest in are hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status. Therefore, each observation is one booking/stay at a specific hotel in America and all of its characteristics. Therefore, there can be multiple observations from the same hotel and even on the same time range.
+This data set was originally collected from an open hotel booking demand dataset from Antonio, Almeida and Nunes, 2019. The data collected from hotels all around the world ranges from bookings in 2015 to 2017. It is sourced from this study https://www.sciencedirect.com/science/article/pii/S2352340918315191#f0010. Due to the dataset being over 100,000 observations, we have limited the observations to be only hotels from the US. The general characteristics being measured in the data are the different aspects of booking and staying at a hotel. For example, out of the 32 variables, some of the ones we find great interest in are hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status. Therefore, each observation is one booking/stay at a specific hotel in America and all of its characteristics. Therefore, there can be multiple observations from the same hotel and even on the same time range. The full dataset dictionary can be found in the repository ReadMe. 
 
 ### Resesarch Question 
-The main response variable we are interested in is the average daily rate or adr. The average daily rate can also be described as the daily cost of a hotel booking, and is calculated by dividing the sum of all lodging transactions by the total number of staying nights.
+To better understand the contributing factors to the daily rate of hotel rooms in the U.S., we build a linear model to 1) evaluate the efficacy of this model to predict daily hotel room rates, and 2) evaluate the statistical significance of each predictor, identifying the strongest contributing factors. We include the following variables in our analysis: hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status.
 
 ### Exploratory data analysis
 
@@ -76,21 +75,19 @@ As of now, we know we are going to use hotel (Resort Hotel or City Hotel), reser
 
 We plan to use multiple linear regression with a variety of combinations of interested predictor variables and their interaction. Based on whether conditions or fit or not or based on the visualization, we believe we may be utilizing logarithmic regression as well. We would also be interested in seeing how stays in the weekend or the weekday may affect the average daily rate for a hotel, and if they differ between the two hotel types, City and Resort hotels.
 
-### Modeling Code (This Section Will Be Hidden)
-```{r}
+### Modeling Code (Hide code with echo = False!)
+```{r modeling}
 
 ```
 
 ## Results
-INSTRUCTIONS: In this section, you will output the final model and include a brief discussion of the model assumptions, diagnostics, and any relevant model fit statistics.
+INSTRUCTIONS: In this section, you will output the final model and include a brief discussion of the model assumptions, diagnostics, and any relevant model fit statistics.This section also includes initial interpretations and conclusions drawn from the model.
 
-This section also includes initial interpretations and conclusions drawn from the model.
-
-```{r}
+```{r model-output}
 
 ```
 
-### Model Assumptions, Diagnostics, Limiation
+### Model Assumptions, Diagnostics, Limitations
 
 ### Interpretations and Conclusions 
 
