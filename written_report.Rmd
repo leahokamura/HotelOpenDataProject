@@ -61,19 +61,37 @@ hotels %>%
 The response variable, adr, has a somewhat skewed right, bimodal distribution. The average or mean average daily rate is \$122.992 and the median is $115. Because the distribution is skewed, the median is most likely the best indicator for the center. The standard deviation is \$51.617 and the data ranges from \$0 to \$328.33 with an interquartile range of \$61.99.
 
 ```{r}
-sum(hotels$adults)
-sum(hotels$children)
-sum(hotels$babies)
+num_adults <- sum(hotels$adults)
+num_children <- sum(hotels$children)
+num_babies <- sum(hotels$babies)
+
+tb <- table(num_adults, num_children, num_babies)
+kable(tb)
 ```
+
 We can see that most of the users were adults and not many users come with babies.
+
 ```{r}
-sum(hotels$meal == "BB")
-sum(hotels$meal == "SC")
-sum(hotels$meal == "HB")
+ggplot(data = hotels, aes(x = meal)) +
+geom_bar() +
+labs(title = "Distribution of meal plan",
+x = "") 
 ```
-We can see that most of the people use bed and breakfast plan rather than half board or full board. 
+We can see that most of the people use bed and breakfast plan (BB) rather than half board or full board (HB and SC). Only few people chose no meal (undefined). 
 
+```{r}
+ggplot(data = hotels, aes(x = assigned_room_type)) +
+geom_bar() +
+labs(title = "Distribution of penguin species",
+x = "")
+```
 
+```{r}
+ggplot(data = hotels, aes(x = reserved_room_type)) +
+geom_bar() +
+labs(title = "Distribution of reserved room type",
+x = "") 
+```
 ## Methodology
 INSTRUCTIONS: This section includes a brief description of your modeling process. Explain the reasoning for the type of model you’re fitting, predictor variables considered for the model including any interactions. Additionally, show how you arrived at the final model by describing the model selection process, any variable transformations (if needed), and any other relevant considerations that were part of the model fitting process.
 
