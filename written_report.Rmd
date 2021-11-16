@@ -119,15 +119,10 @@ We plan to use multiple linear regression with a variety of combinations of inte
 ### Modeling 
 
 ```{r modeling}
-<<<<<<< HEAD
-model <- lm(adr ~  hotel + meal + reservation_status, data = hotels)
-tidy(model, conf.int = TRUE) %>%
-kable(digits = 3)
-=======
-model <-lm(adr ~ adults, data = hotels) 
-
+model <- lm(adr ~ adults + children + babies + hotel + meal + reservation_status, data = hotels)
+#tidy(model, conf.int = TRUE) %>%
+#kable(digits = 3)
 ```
->>>>>>> 88a1f32733da92aefdfc3d6452caad849ce55ede
 
 ### Conditions Check For Linear Model  
 
@@ -142,8 +137,6 @@ autoplot(model, which = c(1,2))
 
 From this analysis, we conclude that the conditions are met for performing 
 multiple linear regression. 
-
-
 
 ## Results
 INSTRUCTIONS: In this section, you will output the final model and include a brief discussion of the model assumptions, diagnostics, and any relevant model fit statistics.This section also includes initial interpretations and conclusions drawn from the model.
