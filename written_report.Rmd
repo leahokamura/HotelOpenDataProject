@@ -65,3 +65,33 @@ The response variable, adr, has a somewhat skewed right, bimodal distribution. T
 ## Methodology
 INSTRUCTIONS: This section includes a brief description of your modeling process. Explain the reasoning for the type of model you’re fitting, predictor variables considered for the model including any interactions. Additionally, show how you arrived at the final model by describing the model selection process, any variable transformations (if needed), and any other relevant considerations that were part of the model fitting process.
 
+### Modeling Choices (Description) 
+- Data transformations (if applied)
+- Model Type Justification 
+- Model selection criteria 
+- Handling Interaction Terms 
+- Any other technical choices 
+
+As of now, we know we are going to use hotel (Resort Hotel or City Hotel), reserved_room_type, assigned_room_type, company, customer_type, stays_in_weekend_nights, stays_in_week_nights, and  meal(type of meal) as predictor variables. We are interested in how the food is served at a hotel and what type of hotel can indicate how much a night in a hotel could cost. As we explore more of the relationships in our dataset, we may add possible predictor variables as we see fit.
+
+We plan to use multiple linear regression with a variety of combinations of interested predictor variables and their interaction. Based on whether conditions or fit or not or based on the visualization, we believe we may be utilizing logarithmic regression as well. We would also be interested in seeing how stays in the weekend or the weekday may affect the average daily rate for a hotel, and if they differ between the two hotel types, City and Resort hotels.
+
+### Modeling Code (This Section Will Be Hidden)
+```{r}
+
+```
+
+## Results
+INSTRUCTIONS: In this section, you will output the final model and include a brief discussion of the model assumptions, diagnostics, and any relevant model fit statistics.
+
+This section also includes initial interpretations and conclusions drawn from the model.
+
+```{r}
+
+```
+
+### Model Assumptions, Diagnostics, Limiation
+
+### Interpretations and Conclusions 
+
+
