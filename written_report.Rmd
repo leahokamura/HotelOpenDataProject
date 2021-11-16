@@ -24,9 +24,9 @@ INSTRUCTIONS: This section includes an introduction to the project motivation, d
 
 ### Introduction 
 
-With the lifting of travel restrictions into the U.S. (https://www.nytimes.com/2021/09/22/travel/us-international-travel-vaccine.html) through the implementation of new travel guidelines, we believe that the booking of hotels may start to increase. Therefore, with the slower return to travel and society pre covid, we are interested in studying the characteristics of hotel room reservations in the United States. Specifically, we are interested in what relationship these characteristics have the cost of a hotel.Our general research question is; How do the characteristics of a hotel booking affect the daily cost of a hotel stay in the United States? We believe there will be several significant points of relevance for understanding these relationships: understanding predictors of room cost could be used to help identify where new hotels could be successfully created, allow travelers to plan financially for future travel.
+With the lifting of travel restrictions into the U.S. (https://www.nytimes.com/2021/09/22/travel/us-international-travel-vaccine.html) through the implementation of new travel guidelines, we believe that the booking of hotels may start to increase. Therefore, with the slower return to travel and society pre covid, we are interested in studying the characteristics of hotel room reservations in the United States. Specifically, we are interested in what relationship these characteristics have the cost of a hotel. Our general research question is; How do the characteristics of a hotel booking affect the daily cost of a hotel stay in the United States? We believe there will be several significant points of relevance for understanding these relationships: understanding predictors of room cost could be used to help identify where new hotels could be successfully created, allow travelers to plan financially for future travel.
 
-In this report, we are looking to use linear models to understand the contributing facors to hotel room price, as well as identify the strongest predictors.
+In this report, we are looking to use linear models to understand the contributing factors to hotel room price, as well as identify the strongest predictors.
 
 ### Data 
 
@@ -58,7 +58,20 @@ hotels %>%
               iqr = IQR(adr))
 ```
 
-The response variable, adr, has a somewhat skewed right, bimodal distribution. The average or mean adr is \$122.992 and the median is $115. Because the distribution is skewed, the median is most likely the best indicator for the center. The standard deviation is \$51.617 and the data ranges from \$0 to \$328.33 with an interquartile range of \$61.99.
+The response variable, adr, has a somewhat skewed right, bimodal distribution. The average or mean average daily rate is \$122.992 and the median is $115. Because the distribution is skewed, the median is most likely the best indicator for the center. The standard deviation is \$51.617 and the data ranges from \$0 to \$328.33 with an interquartile range of \$61.99.
+
+```{r}
+sum(hotels$adults)
+sum(hotels$children)
+sum(hotels$babies)
+```
+We can see that most of the users were adults and not many users come with babies.
+```{r}
+sum(hotels$meal == "BB")
+sum(hotels$meal == "SC")
+sum(hotels$meal == "HB")
+```
+We can see that most of the people use bed and breakfast plan rather than half board or full board. 
 
 
 ## Methodology
