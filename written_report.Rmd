@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(broom)
 library(knitr)
+library(ggfortify)
 ``` 
 
 ```{r load-data}
@@ -106,10 +107,28 @@ As of now, we know we are going to use hotel (Resort Hotel or City Hotel), reser
 
 We plan to use multiple linear regression with a variety of combinations of interested predictor variables and their interaction. Based on whether conditions or fit or not or based on the visualization, we believe we may be utilizing logarithmic regression as well. We would also be interested in seeing how stays in the weekend or the weekday may affect the average daily rate for a hotel, and if they differ between the two hotel types, City and Resort hotels.
 
-### Modeling Code (Hide code with echo = False!)
+### Modeling 
+
 ```{r modeling}
+model <-lm(adr ~ adults, data = hotels) 
 
 ```
+
+### Conditions Check For Linear Model  
+
+```{r }
+# Residual + QQ Plots
+autoplot(model, which = c(1,2))
+```
+• Linearity The residuals are randomly scattered in the plot of residuals vs fitted, so the linearity condition is satisfied.
+• Constant variance: The spread of the residuals is approximately equal in the plot of residuals vs. fitted as the fitted value increases. There are a few outliers, but overall the spread of the residuals is equal. Therefore constant variance is satisfied.
+• Normality: The QQ-plot shows that the distribution of the residuals is skewed right, so this condition is not satisfied. However, the model is robust to deviations from normality for sample sizes greater than 30. Our sample size of 1447 is greater than 30, so we can proceed.
+• Independence: This condition is not met since there are multiple observations for most lemurs. These observations would be correlated
+
+From this analysis, we conclude that the conditions are met for performing 
+multiple linear regression. 
+
+
 
 ## Results
 INSTRUCTIONS: In this section, you will output the final model and include a brief discussion of the model assumptions, diagnostics, and any relevant model fit statistics.This section also includes initial interpretations and conclusions drawn from the model.
@@ -118,7 +137,47 @@ INSTRUCTIONS: In this section, you will output the final model and include a bri
 
 ```
 
-### Model Assumptions, Diagnostics, Limitations
+### Diagnostics 
+
+```{r}
+autoplot(model, which = c(3, 4, 5))
+
+#Leverage 
+lev_threshold <- 2 * 2 / nrow(hotels) 
+hotel_aug <- augment(model) 
+
+hotel_aug %>%
+filter(.hat > lev_threshold) %>% nrow()
+
+# High Magnitude Residual 
+hotel_aug %>%
+filter(.std.resid < -3 | .std.resid > 3) %>% nrow()
+
+# Influential Point 
+hotel_aug %>%
+filter(.cooksd > 1.0) %>% nrow()
+ 
+```
+We use leverage and Cook's Distance to identify influential observations in our dataset, and use standardized residuals to identify outliers. 
+
+Leverage is a measure of the distance between an observation's values of the predictor variables and the average values of the predictor variables for the entire data set. We define a high leverage point as having a leverage greater than $ 2(p+1) /n  $, where p is the number of predictors and n is the number of observations. We find X observations to be high leverage, and consider them to be
+potential influential points. 
+
+Cook's distance is a composite measure of an observation's leverage and standardized residual, and is used to identify influential points. An observation is considered an influential point if it’s Cook’s distance is greater than 1.0. We find X observations with a Cook's distance greater than 1.0, and conclude that they are influential points. 
+
+We hypothesize that these points are influential because ___. 
+
+Standardized residuals can be used to identify outliers, as observations that have standardized residuals of large magnitude don't fit the pattern determined by the regression model. We identify outliers as observations with standardized residuals with a magnitude greater than or equal to 3. We find X observations to be outliers, and _____(remove them?). 
+
+```{r plot_outliers}
+hotel_aug <- hotel_aug %>%
+mutate(outlier = if_else(.std.resid < -3 | .std.resid > 3, "Yes", "No"))
+
+ggplot(hotel_aug, aes(x = adults, y = adr)) + geom_point(aes(color = outlier)) +
+geom_smooth(method = "lm", se = FALSE)
+```
+
+### Model Assumptions, Limitations
 
 ### Interpretations and Conclusions 
 
