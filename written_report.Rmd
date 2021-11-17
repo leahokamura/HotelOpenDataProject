@@ -1,5 +1,5 @@
 ---
-title: "Project (REPLACE WITH TITLE)"
+title: "Predicting the Cost of Hotel Booking in the United States"
 author: "LAM-duh: Xuliang Deng, Leah Okamura, Megan Richards"
 date: "Nov 15th, 2021"
 output: pdf_document
@@ -9,25 +9,20 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r load-packages}
+```{r load-packages,include=FALSE}
 library(tidyverse)
 library(broom)
 library(knitr)
 library(ggfortify)
 ``` 
 
-```{r load-data}
+```{r load-data,include=FALSE}
 hotels <- read_csv("data/hotels_reduced.csv")
 ```
 
-## Introduction and Data
-INSTRUCTIONS: This section includes an introduction to the project motivation, data, and research question. Describe the data and definitions of key variables. It should also include some exploratory data analysis. All of the EDA won’t fit in the paper, so focus on the EDA for the response variable and a few other interesting variables and relationships.
-
 ### Introduction 
 
-With the lifting of travel restrictions into the U.S. (https://www.nytimes.com/2021/09/22/travel/us-international-travel-vaccine.html) through the implementation of new travel guidelines, we believe that the booking of hotels may start to increase. Therefore, with the slower return to travel and society pre covid, we are interested in studying the characteristics of hotel room reservations in the United States. Specifically, we are interested in what relationship these characteristics have the cost of a hotel. Our general research question is; How do the characteristics of a hotel booking affect the daily cost of a hotel stay in the United States? We believe there will be several significant points of relevance for understanding these relationships: understanding predictors of room cost could be used to help identify where new hotels could be successfully created, allow travelers to plan financially for future travel.
-
-In this report, we are looking to use linear models to understand the contributing factors to hotel room price, as well as identify the strongest predictors.
+With the lifting of travel restrictions into the U.S. (https://www.nytimes.com/2021/09/22/travel/us-international-travel-vaccine.html) through the implementation of new travel guidelines, we believe that travel to the U.S. start to increase and look like as it did before the pandemic. Therefore, with travel and tourism in the U.S. increasing, we believe that the booking of hotels may start to increase as well. With this assumption, with the slower return to travel and society pre covid, we are interested in studying the characteristics of hotel room reservations in the United States. Specifically, we are interested in what relationship these characteristics have with the cost of a hotel. Our general research question is: How do the characteristics of a hotel booking affect the daily cost of a hotel stay in the United States? We believe there will be several significant points of relevance for understanding these relationships: understanding predictors of room cost could be used to help identify where new hotels could be successfully created, allow travelers to plan financially for future travel, allow hotels to predict future profit, etc. In this report, we are looking to use a variety of chosen models to understand the contributing factors to hotel room price, as well as identify the strongest predictors in the determining the avreage daily rate.
 
 ### Data 
 
@@ -35,7 +30,11 @@ The source of the dataset is Tiny Tuesday, https://github.com/rfordatascience/ti
 This data set was originally collected from an open hotel booking demand dataset from Antonio, Almeida and Nunes, 2019. The data collected from hotels all around the world ranges from bookings in 2015 to 2017. It is sourced from this study https://www.sciencedirect.com/science/article/pii/S2352340918315191#f0010. Due to the dataset being over 100,000 observations, we have limited the observations to be only hotels from the US. The general characteristics being measured in the data are the different aspects of booking and staying at a hotel. For example, out of the 32 variables, some of the ones we find great interest in are hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status. Therefore, each observation is one booking/stay at a specific hotel in America and all of its characteristics. Therefore, there can be multiple observations from the same hotel and even on the same time range. The full dataset dictionary can be found in the repository ReadMe. 
 
 ### Resesarch Question 
-To better understand the contributing factors to the daily rate of hotel rooms in the U.S., we build a linear model to 1) evaluate the efficacy of this model to predict daily hotel room rates, and 2) evaluate the statistical significance of each predictor, identifying the strongest contributing factors. We include the following variables in our analysis: hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status.
+
+To better understand the contributing factors to the daily rate of hotel rooms in the U.S., we will build models to:
+
+1) Evaluate the efficacy of this model to predict daily hotel room rates
+2) Evaluate the statistical significance of each predictor, identifying the strongest contributing factors. We include the following variables in our analysis: hotel type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status.
 
 ### Exploratory data analysis
 
@@ -56,29 +55,30 @@ hotels %>%
               sd = sd(adr),
               min = min(adr),
               max = max(adr),
-              iqr = IQR(adr))
+              iqr = IQR(adr))%>%
+kable(digits = 3)
 ```
 
 The response variable, adr, has a somewhat skewed right, bimodal distribution. The average or mean average daily rate is \$122.992 and the median is $115. Because the distribution is skewed, the median is most likely the best indicator for the center. The standard deviation is \$51.617 and the data ranges from \$0 to \$328.33 with an interquartile range of \$61.99.
 
 ```{r}
-num_adults <- sum(hotels$adults)
-num_children <- sum(hotels$children)
-num_babies <- sum(hotels$babies)
+adults <- sum(hotels$adults)
+children <- sum(hotels$children)
+babies <- sum(hotels$babies)
 
-tb <- table(num_adults, num_children, num_babies)
+tb <- table(adults, children, babies)
 kable(tb)
 ```
 
-We can see that most of the users were adults and not many users come with babies.
+This table provides insight on the type of people who were booking hotels in the U.S. during this time period. A large majority of customers were only adults with a total of 3,950 hotel bookings. The next largest customer group were people or adults with their children at a total of 362 bookings. Lastly, those who booked a stay with a baby was considerably less, with only 6 bookings.
 
 ```{r}
 ggplot(data = hotels, aes(x = meal)) +
 geom_bar() +
-labs(title = "Distribution of meal plan",
-x = "") 
+labs(title = "Distribution of Meal Plan According to Booking Details",
+      y = "Frequency",
+      x = "Type of Meal Plan") 
 ```
-We can see that most of the people use bed and breakfast plan (BB) rather than half board or full board (HB and SC). Only few people chose no meal (undefined). 
 
 ```{r}
 hotels %>%
@@ -87,12 +87,16 @@ hotels %>%
   kable(digits = 3)
 ```
 
+We can see that majority of customer bookings chose the Bed and Breakfast plan (BB), rather than Half Board plan or Full Board (HB and SC). While this does reflect the choice of those booking the hotel, this visualization and dataset can also be influenced by what type of meal plan each hotel is offering. 
+
 ```{r}
 ggplot(data = hotels, aes(x = reservation_status)) +
 geom_bar() +
-labs(title = "Distribution of reservation status",
-x = "") 
+labs(title = "Distribution of Reservation Status",
+  x = "Type of Status",
+  y = "Frequency") 
 ```
+A vast majority of the reservation statuses in this dataset resulted in a check-out, meaning that the customer arrived and stayed for the duration of the stay. It also important to note that a substantial proportion of hotel bookings were canceled, and if possible we would like to investigate what relationship might exist here.
 
 ```{r}
 hotels %>%
@@ -100,10 +104,9 @@ hotels %>%
   summarise(n = n(), mean = mean(adr), sd = sd(adr)) %>%
   kable(digits = 3)
 ```
-We can see that resort hotel is more expensive and most of the users use city hotels.
+We can see that resort hotel is on average more expensive, and that most customers booked at city hotels. We are interested in whether the classification of City Hotel and Resort Hotel will proportionately have similar relationships with the other variables.
 
 ## Methodology
-INSTRUCTIONS: This section includes a brief description of your modeling process. Explain the reasoning for the type of model you’re fitting, predictor variables considered for the model including any interactions. Additionally, show how you arrived at the final model by describing the model selection process, any variable transformations (if needed), and any other relevant considerations that were part of the model fitting process.
 
 ### Modeling Choices (Description) 
 - Data transformations (if applied)
@@ -112,16 +115,23 @@ INSTRUCTIONS: This section includes a brief description of your modeling process
 - Handling Interaction Terms 
 - Any other technical choices 
 
-As of now, we know we are going to use hotel (Resort Hotel or City Hotel), reserved_room_type, assigned_room_type, company, customer_type, stays_in_weekend_nights, stays_in_week_nights, and  meal(type of meal) as predictor variables. We are interested in how the food is served at a hotel and what type of hotel can indicate how much a night in a hotel could cost. As we explore more of the relationships in our dataset, we may add possible predictor variables as we see fit.
+It is important to note that there are a few variables in the dataset that do not provide insight to our research question and as a result we will remove from the dataset. First is the category `hotels$country`, due to the fact that every hotel in this subset of the data is located in the U.S., this is a redundant variable. Next, the two variables `hotels$reserved_room_type` and `hotels$assigned_room_type` are both categorical variables that have letters assigned to each room type. However, due to the confidentiality of the customers, the classification of these letters have not been identified by those who collected the data. Therefore, we will be removing these variables from the dataset.
+
+```{r}
+hotels$country <- NULL 
+hotels$reserved_room_type <- NULL 
+hotels$assigned_room_type <- NULL 
+```
+
+
+As of now, we know we are going to use hotel (Resort Hotel or City Hotel), company, customer_type, stays_in_weekend_nights, stays_in_week_nights, and  meal(type of meal) as predictor variables. We are interested in how the food is served at a hotel and what type of hotel can indicate how much a night in a hotel could cost. As we explore more of the relationships in our dataset, we may add other possible predictor variables as we see fit.
 
 We plan to use multiple linear regression with a variety of combinations of interested predictor variables and their interaction. Based on whether conditions or fit or not or based on the visualization, we believe we may be utilizing logarithmic regression as well. We would also be interested in seeing how stays in the weekend or the weekday may affect the average daily rate for a hotel, and if they differ between the two hotel types, City and Resort hotels.
 
 ### Modeling 
 
-```{r modeling}
+```{r}
 model <- lm(adr ~ adults + children + babies + hotel + meal + reservation_status, data = hotels)
-#tidy(model, conf.int = TRUE) %>%
-#kable(digits = 3)
 ```
 
 ### Conditions Check For Linear Model  
@@ -135,15 +145,19 @@ autoplot(model, which = c(1,2))
 • Normality: The QQ-plot shows that the distribution of the residuals is skewed right, so this condition is not satisfied. However, the model is robust to deviations from normality for sample sizes greater than 30. Our sample size of 1447 is greater than 30, so we can proceed.
 • Independence: This condition is not met since there are multiple observations for most lemurs. These observations would be correlated
 
-From this analysis, we conclude that the conditions are met for performing 
-multiple linear regression. 
+From this analysis, we conclude that the conditions are met for performing  linear regression. 
+
 
 ## Results
-INSTRUCTIONS: In this section, you will output the final model and include a brief discussion of the model assumptions, diagnostics, and any relevant model fit statistics.This section also includes initial interpretations and conclusions drawn from the model.
 
-```{r model-output}
-
+```{r modeling}
+tidy(model, conf.int = TRUE) %>%
+kable(digits = 3)
 ```
+
+$$\hat{Average Daily Rate} = 79.723	 + 79.723	(adults) + 35.169(children)$$
+$$ -22.637(babies) + 2.353(hotel Resort Hotel) + 33.779 (mealHB) - 17.205(mealSc)$$
+$$+106.033(mealUndefined)-12.809(reservationstatusCheck-Out) - 2.662(reservationstatusNo-Show)$$
 
 ### Diagnostics 
 
@@ -173,16 +187,17 @@ potential influential points.
 
 Cook's distance is a composite measure of an observation's leverage and standardized residual, and is used to identify influential points. An observation is considered an influential point if it’s Cook’s distance is greater than 1.0. We find X observations with a Cook's distance greater than 1.0, and conclude that they are influential points. 
 
-We hypothesize that these points are influential because ___. 
 
-Standardized residuals can be used to identify outliers, as observations that have standardized residuals of large magnitude don't fit the pattern determined by the regression model. We identify outliers as observations with standardized residuals with a magnitude greater than or equal to 3. We find X observations to be outliers, and _____(remove them?). 
+Standardized residuals can be used to identify outliers, as observations that have standardized residuals of large magnitude don't fit the pattern determined by the regression model. We identify outliers as observations with standardized residuals with a magnitude greater than or equal to 3. We find X observations to be outliers.
 
 ```{r plot_outliers}
 hotel_aug <- hotel_aug %>%
 mutate(outlier = if_else(.std.resid < -3 | .std.resid > 3, "Yes", "No"))
 
 ggplot(hotel_aug, aes(x = adults, y = adr)) + geom_point(aes(color = outlier)) +
-geom_smooth(method = "lm", se = FALSE)
+geom_smooth(method = "lm", se = FALSE) + labs(title = "PLotting of Outliers",
+      y = "Average Daily Rate",
+      x = "Adults") 
 ```
 
 ### Model Assumptions, Limitations
