@@ -106,6 +106,35 @@ hotels %>%
 ```
 We can see that resort hotel is on average more expensive, and that most customers booked at city hotels. We are interested in whether the classification of City Hotel and Resort Hotel will proportionately have similar relationships with the other variables.
 
+```{r}
+ggplot(data = hotels, aes(x = lead_time, y = adr, color = hotel)) +
+geom_point() +
+labs(title = "Relationship between how early people book hotel and price in the US dollars",
+  x = "Subtraction of entering date from arrival date",
+  y = "Price in the US Dollars") 
+```
+We can see that the more last minute visitors book a hotel, the more likely it is that the price in the US dollars varies. Besides, we can also see that the highest price in a hotel decreases as the difference between entering data and arrival date increases. This could suggest that the earlier you book a hotel, the price is more likely to be cheap. 
+
+```{r}
+ggplot(data = hotels, aes(x = adr, y = arrival_date_day_of_month, color=hotel)) +
+geom_point() +
+labs(title = "Relationship between day in the month when hotels are booked and price in the US dollars",
+  x = "Day in the month",
+  y = "Price in US Dollars") 
+```
+We cannot see any significant relationship between day in the month and the hotel price from this figure. However, we can see that summer is the busiest season for hotels and the price varies evenly. At the beginning of the year and the end of the year, hotels are not really booked as often. 
+
+```{r}
+ggplot(data = hotels, aes(x = arrival_date_week_number, y = adr, color=hotel)) +
+geom_point() +
+labs(title = "Relationship between week in the year when hotels are booked and price in the US dollars",
+  x = "Week in the year",
+  y = "Price in US Dollars") 
+```
+From this figure, we can also see that at the beginning and end of the year hotels are not as busy as during the summer. Besides, we can also observe that the price of hotel tends to become higher during summer time compared to the rest of the year. 
+
+
+
 ## Methodology
 
 ### Modeling Choices (Description) 
