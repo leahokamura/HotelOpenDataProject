@@ -195,12 +195,12 @@ We plan to use multiple linear regression with a variety of combinations of inte
 
 
 ```{r}
-full_model <- lm(adr ~ adults + children + babies + hotel + meal + reservation_status, data = hotels)
+full_model <- lm(adr ~ ., data = hotels)
 tidy(full_model) %>%
   kable(digits = 3)
 ```
 
-```{r}
+```{r results = "hide"}
 selected_model <- step(full_model, scope=formula(full_model), direction="backward", k = log(nrow(hotels)))
 ```
 
