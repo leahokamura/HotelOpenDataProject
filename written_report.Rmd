@@ -148,10 +148,22 @@ print(hotel_type_p_value)
 ```
 
 
+We are also particularly interested in using the presence of kids (children or babies) as a predictor of average daily rate. As an initial analysis, we perform a t-test on the the average daily rates of bookings for groups with only adults, versus groups with children or babies. This t-test assesses if there is a significant difference between the two distributions, which would indicate that the presence of kids is likely to be a useful predictor of average daily rate. In this analysis, we find that our t-test produces a p-value of 1.13e-33%. Because this p-value is very low, we conclude that there is a statistically significant relationship between the average daily hotel rates of groups with children or babies and groups with only adults in our dataset, which provides evidence that the presence of kids (children or babies) is a useful predictor of average daily hotel rates. 
 
-#```{r}
-#tinytex::install_tinytex()
-#```
+
+
+```{r adult-t-test}
+hotels$only_adults_present <- hotels$adults > 0 & hotels$children == 0 & hotels$babies == 0
+hotels$kids_present <- hotels$children > 0 | hotels$babies > 0
+
+adult_adr <- hotels[hotels$only_adults_present == TRUE,]$adr
+kids_adr <- hotels[hotels$kids_present == TRUE,]$adr
+
+resident_type_p_value <- t.test(adult_adr, kids_adr)$p.value
+print(resident_type_p_value)
+```
+
+
 ## Methodology
 
 ### Modeling Choices (Description) 
