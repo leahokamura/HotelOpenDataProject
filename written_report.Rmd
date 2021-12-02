@@ -185,6 +185,26 @@ As of now, we know we are going to use hotel (Resort Hotel or City Hotel), compa
 
 We plan to use multiple linear regression with a variety of combinations of interested predictor variables and their interaction. Based on whether conditions or fit or not or based on the visualization, we believe we may be utilizing logarithmic regression as well. We would also be interested in seeing how stays in the weekend or the weekday may affect the average daily rate for a hotel, and if they differ between the two hotel types, City and Resort hotels.
 
+```{r}
+orig_model <- lm(adr ~ adults + children + babies + hotel + meal + reservation_status, data = hotels)
+tidy(orig_model) %>%
+  kable(digits = 3)
+```
+```{r}
+full_model <- lm(adr ~ adults + children + babies + hotel + meal + reservation_status, data = hotels)
+tidy(full_model) %>%
+  kable(digits = 3)
+```
+
+```{r}
+selected_model <- step(full_model, scope=formula(full_model), direction="backward", k = log(nrow(hotels)))
+```
+
+```{r}
+tidy(selected_model) %>%
+  kable()
+```
+
 ### Modeling 
 
 ```{r}
