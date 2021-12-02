@@ -38,6 +38,10 @@ To better understand the contributing factors to the daily rate of hotel rooms i
 
 ### Exploratory data analysis
 
+```{r make-total-stay-var}
+hotels$total_stay_length <- hotels$stays_in_week_nights + hotels$stays_in_weekend_nights
+```
+
 ```{r response-plot}
 ggplot(data = hotels, aes(x = adr)) +
   geom_histogram() + 
