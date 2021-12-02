@@ -137,8 +137,21 @@ labs(title = "Relationship between week in the year when hotels are booked and p
 ```
 From this figure, we can also see that at the beginning and end of the year hotels are not as busy as during the summer. Besides, we can also observe that the price of hotel tends to become higher during summer time compared to the rest of the year. 
 
+We are particularly interested in using the hotel type (Resort versus City Hotel) as a predictor of average daily rate. As an initial analysis, we perform a t-test on the the average daily rates of bookings for resort versus city hotels. This t-test assesses if there is a significant difference between the two distributions, which would indicate that hotel type is likely to be a useful predictor of average daily rate. In this analysis, we find that our t-test produces a p-value of 0.002305%. Because this p-value is very low, we conclude that there is a statistically significant relationship between the average daily hotel rates of resort hotels and city hotels in our dataset, which provides evidence that hotel type is a useful predictor of average daily hotel rates. 
+
+```{r resort-t-test}
+resort_adr <- hotels[hotels$hotel == "Resort Hotel",]$adr
+city_adr <- hotels[hotels$hotel == "City Hotel",]$adr
+
+hotel_type_p_value <- t.test(resort_adr, city_adr)$p.value
+print(hotel_type_p_value)
+```
 
 
+
+#```{r}
+#tinytex::install_tinytex()
+#```
 ## Methodology
 
 ### Modeling Choices (Description) 
@@ -155,7 +168,6 @@ hotels$country <- NULL
 hotels$reserved_room_type <- NULL 
 hotels$assigned_room_type <- NULL 
 ```
-
 
 As of now, we know we are going to use hotel (Resort Hotel or City Hotel), company, customer_type, stays_in_weekend_nights, stays_in_week_nights, and  meal(type of meal) as predictor variables. We are interested in how the food is served at a hotel and what type of hotel can indicate how much a night in a hotel could cost. As we explore more of the relationships in our dataset, we may add other possible predictor variables as we see fit.
 
