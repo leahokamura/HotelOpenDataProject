@@ -62,8 +62,8 @@ To better understand the contributing factors to the daily rate of hotel rooms i
 
 #Appendix
 ```{r response-plot}
-ggplot(data = hotels, aes(x = adr)) +
-  geom_histogram(fill = 2) + 
+ggplot(data = hotels, aes(x = adr, fill = hotel)) +
+  geom_histogram() + 
   labs(x = "Price in US Dollars",
        y = "Frequency", 
        title = "Distribution of Average Daily Rate (Cost) of Hotel Bookings",
@@ -98,8 +98,8 @@ This table provides insight on the type of people who were booking hotels in the
 
 #Appendix
 ```{r}
-ggplot(data = hotels, aes(x = meal)) +
-geom_bar(fill = 2) +
+ggplot(data = hotels, aes(x = meal, fill = hotel)) +
+geom_bar() +
 labs(title = "Distribution of Meal Plan According to Booking Details",
       y = "Frequency",
       x = "Type of Meal Plan") 
@@ -117,8 +117,8 @@ We can see that majority of customer bookings chose the Bed and Breakfast plan (
 
 #Appendix
 ```{r}
-ggplot(data = hotels, aes(x = reservation_status)) +
-geom_bar(fill = 2) +
+ggplot(data = hotels, aes(x = reservation_status, fill = hotel)) +
+geom_bar() +
 labs(title = "Distribution of Reservation Status",
   x = "Type of Status",
   y = "Frequency") 
@@ -134,8 +134,8 @@ hotels %>%
 We can see that resort hotel is on average more expensive, and that most customers booked at city hotels. We are interested in whether the classification of City Hotel and Resort Hotel will proportionately have similar relationships with the other variables.
 
 ```{r}
-ggplot(data = hotels, aes(x = lead_time, y = adr)) +
-geom_point(colour = "red") +
+ggplot(data = hotels, aes(x = lead_time, y = adr, color = hotel)) +
+geom_point() +
 labs(title = "Relationship between how early people book hotel and price in the US dollars",
   x = "Subtraction of entering date from arrival date",
   y = "Price in the US Dollars") 
@@ -143,8 +143,8 @@ labs(title = "Relationship between how early people book hotel and price in the 
 We can see that the more last minute visitors book a hotel, the more likely it is that the price in the US dollars varies. Besides, we can also see that the highest price in a hotel decreases as the difference between entering data and arrival date increases. This could suggest that the earlier you book a hotel, the price is more likely to be cheap. 
 
 ```{r}
-ggplot(data = hotels, aes(x = adr, y = arrival_date_day_of_month)) +
-geom_point(colour = "red") +
+ggplot(data = hotels, aes(x = adr, y = arrival_date_day_of_month, color=hotel)) +
+geom_point() +
 labs(title = "Relationship between day in the month when hotels are booked and price in the US dollars",
   x = "Day in the month",
   y = "Price in US Dollars") 
@@ -152,8 +152,8 @@ labs(title = "Relationship between day in the month when hotels are booked and p
 We cannot see any significant relationship between day in the month and the hotel price from this figure. However, we can see that summer is the busiest season for hotels and the price varies evenly. At the beginning of the year and the end of the year, hotels are not really booked as often. 
 
 ```{r}
-ggplot(data = hotels, aes(x = arrival_date_week_number, y = adr)) +
-geom_point(colour = "red") +
+ggplot(data = hotels, aes(x = arrival_date_week_number, y = adr, color=hotel)) +
+geom_point() +
 labs(title = "Relationship between week in the year when hotels are booked and price in the US dollars",
   x = "Week in the year",
   y = "Price in US Dollars") 
@@ -269,7 +269,7 @@ selected_model <- stats::step(full_model, scope=formula(full_model), direction="
 
 ```{r }
 # Residual + QQ Plots
-autoplot(selected_model, which = c(1,2),  colour = "red")
+autoplot(selected_model, which = c(1,2), colour = "hotel")
 ```
 To check that a linear model is applicable to this dataset, we check the following conditions: Linearity, Constant Variance, Normality, and Independence. 
 
@@ -290,11 +290,6 @@ From this analysis, we conclude that the conditions are met for performing linea
 autoplot(selected_model, which = 1, ncol =1, colour = 'hotel')
 autoplot(selected_model, which = 3, ncol =1, colour = 'hotel')
 autoplot(selected_model, which = 4, ncol =1, colour = 'hotel')
-
-```
-
-```{r}
-autoplot(selected_model, which = c(3, 4, 5), colour = "red")
 
 
 #Leverage 
@@ -356,10 +351,21 @@ Another attribute that may effect the daily price of the hotel is the number of 
 
 Lastly, we will discuss how a meal plan can possibly change the average daily price of a hotel stay. In the variable meal, the baseline is if a guest were to get no meal plan. The coefficient for Bed and Breakfast has a coefficient of 21.739 and a p-value of approximately 0. Therefore, we can say that if one were to choose the meal plan Bed and Breakfast, they would pay on average \$21.74 more than if they did not buy a meal plan. Similarly for a Half Board meal plan (breakfast and one other meal), the guest is expected to pay on average $50.50 more per day for their hotel stay if they were to get the Half Board plan versus no meal plan. This interpretation is supported by the approximately 0 p-value for this coefficient. 
 
-In addition to discussing how the different predictors affect the average daily rate, one can also use the model to predict how much their hotel stay may cost in relation to these factors.
+In addition to discussing how the different predictors affect the average daily rate, one can also use the model to predict how much their hotel stay may cost in relation to these factors. For example, we can predict the average daily rate for a guest who had a reservation at a Resort Hotel that was not canceled, had 90 days elapsed between the entering date of the booking into the PMS and their arrival date, had an arrival date of February 26, 2016, stayed for 3 weekend nights, consisted of 2 adults and 3 children, got a Half Board meal plan, booked directly from the hotel, is not a repeated guest, has not had previous bookings canceled, had 0 days in the wait list and had a total of 4 special requests. 
 
+```{r}
+x0 <- tibble(hotel = "Resort Hotel", is_canceled = 0, lead_time = 90, arrival_date_year = "2016", arrival_date_month = "February",
+             arrival_date_day_of_month = 26, stays_in_week_nights = 3, adults = 2, children =3, meal = "HB", distribution_channel = "Direct",
+             is_repeated_guest = 0, previous_bookings_not_canceled = 0, days_in_waiting_list = 0, total_of_special_requests = 4)
 
-To determine the predictive ability of our model, we use the Root Mean Squared Error 
+selected_model %>% 
+  predict(x0, interval = "confidence", level = .90) %>%
+  kable(digits = 3)
+```
+
+Based on the above table, we are 95% confident that the average daily rate for this guest will fall somewhere between \$196.49 and \$224.31. Therefore, we can predict that this guest's reservation will have an average daily rate of about $210.40. This model can be applied to a variety of hypothetical guests and reservations to predict how much one's hotel stay would cost. 
+
+To determine the accuracy of the predictive ability of our model, we use the Root Mean Squared Error 
 on both our training and test datasets below. We find a very similar error between 
 our training and test sets, and find that on average, our predictions differ 
 from the actual value by around $43. 
