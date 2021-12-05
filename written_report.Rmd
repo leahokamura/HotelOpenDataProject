@@ -21,10 +21,16 @@ library(tidyverse)
 library(broom)
 library(knitr)
 library(ggfortify)
+library(dplyr)
+library(Metrics)
+#install.packages("Metrics")
 ``` 
 
 ```{r load-data,include=FALSE}
-hotels <- read_csv("data/hotels_reduced.csv")
+hotels_total <- read_csv("data/hotels_reduced.csv")
+dt <- sort(sample(nrow(hotels_total), nrow(hotels_total)*.7))
+hotels <-hotels_total[dt,]
+hotels_test <-hotels_total[-dt,]
 ```
 
 ### Introduction 
@@ -257,6 +263,19 @@ kable(digits = 3)
 $$\hat{Average Daily Rate} = 79.723	 + 79.723	(adults) + 35.169(children)$$
 $$ -22.637(babies) + 2.353(hotel Resort Hotel) + 33.779 (mealHB) - 17.205(mealSc)$$
 $$+106.033(mealUndefined)-12.809(reservationstatusCheck-Out) - 2.662(reservationstatusNo-Show)$$
+
+To determine the predictive ability of our model, we use the Root Mean Squared Error 
+on both our training and test datasets below. We find a very similar error between 
+our training and test sets, and find that on average, our predictions differ 
+from the actual value by around $43. 
+
+```{r}
+train_predictions <- model %>% predict(hotels)
+test_predictions <- model %>% predict(hotels_test)
+
+rmse(train_predictions, hotels$adr)
+rmse(test_predictions, hotels_test$adr)
+```
 
 ### Diagnostics 
 
