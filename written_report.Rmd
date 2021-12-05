@@ -12,6 +12,19 @@ bibliography: references.bib
 link-citations: true
 ---
 
+
+```{r ggplot2-options, include = FALSE}
+# set consistent theme
+#theme_set(ggplot2::theme_minimal())
+color_palette <- list(gray = "#999999", 
+                      green = "#009E73", 
+                      yellow = "#F0E442", 
+                      darkblue = "#0072B2", 
+                      purple = "#800080", 
+                      orange = "#ff8c00",
+                      cyan = "#008B8B"
+                      )
+```
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -55,7 +68,7 @@ To better understand the contributing factors to the daily rate of hotel rooms i
 
 
 ```{r response-plot}
-ggplot(data = hotels, aes(x = adr)) +
+ggplot(data = hotels, aes(x = adr, fill = hotel)) +
   geom_histogram() + 
   labs(x = "Price in US Dollars",
        y = "Frequency", 
@@ -91,7 +104,7 @@ This table provides insight on the type of people who were booking hotels in the
 
 #Appendix
 ```{r}
-ggplot(data = hotels, aes(x = meal)) +
+ggplot(data = hotels, aes(x = meal, fill = hotel)) +
 geom_bar() +
 labs(title = "Distribution of Meal Plan According to Booking Details",
       y = "Frequency",
@@ -110,7 +123,7 @@ We can see that majority of customer bookings chose the Bed and Breakfast plan (
 
 #Appendix
 ```{r}
-ggplot(data = hotels, aes(x = reservation_status)) +
+ggplot(data = hotels, aes(x = reservation_status, fill = hotel)) +
 geom_bar() +
 labs(title = "Distribution of Reservation Status",
   x = "Type of Status",
@@ -157,10 +170,10 @@ We are particularly interested in using the hotel type (Resort versus City Hotel
 
 ```{r}
 ggplot(data = hotels, aes(x = hotel)) +
-geom_bar() +
+geom_bar(fill = 2) +
 labs(title = "Distribution of Hotel Type",
   x = "Type of Hotel",
-  y = "Frequency") 
+  y = "Frequency")
 ```
 
 ```{r resort-t-test}
@@ -276,7 +289,7 @@ tidy(selected_model) %>%
 
 ```{r }
 # Residual + QQ Plots
-autoplot(selected_model, which = c(1,2))
+autoplot(selected_model, which = c(1,2), colour = "hotel")
 ```
 To check that a linear model is applicable to this dataset, we check the following conditions: Linearity, Constant Variance, Normality, and Independence. 
 
@@ -318,7 +331,7 @@ from the actual value by around $43.
 ### Diagnostics 
 
 ```{r}
-autoplot(selected_model, which = c(3, 4, 5))
+autoplot(selected_model, which = c(3, 4, 5), colour = 'hotel')
 
 #Leverage 
 lev_threshold <- 2 * 2 / nrow(hotels) 
