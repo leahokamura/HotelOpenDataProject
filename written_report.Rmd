@@ -43,31 +43,24 @@ library(ggplot2)
 hotels <- read_csv("data/hotels_reduced.csv")
 ```
 
-### Introduction 
+# Introduction/Data 
 
 Hotels are a critical component of the travel sector in the U.S., with an estimated 5.3 million guest rooms, and supporting 1 in 25 American jobs on average prior to 2020 based on [this source](https://www.ahla.com/sites/default/files/2021_state_of_the_industry_0.pdf). [A 2018 report](https://www.trekksoft.com/en/blog/65-travel-tourism-statistics-for-2019) showed that 
 approximately two thirds of Americans book their hotels directly through hotel websites, and [a 2019 analysis](https://globalnews.booking.com/bookingcom-reveals-key-findings-from-its-2019-sustainable-travel-report/) showed large
 discrepancies in consumer travel cost based on how consumers chose to prioritize booking lodging compared to activities. 
 We are interested in analyzing U.S. hotel bookings, with the goal of providing insight to consumers on the factors that affect their hotel cost.Our general research question is: How do the characteristics of a hotel booking affect the daily cost of a hotel stay in the United States? We believe there will be several significant points of relevance for understanding these relationships: understanding predictors of room cost could be used to help travelers to plan financially for future travel, or to potentially reduce cost. In this report, we are looking to use a variety of chosen models to understand the contributing factors to the average daily rate of a hotel room, as well as identify the strongest predictors.
 
-### Data 
-
 The source of the dataset is [Tiny Tuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-11/readme.md).
 This data set was originally collected from an open hotel booking demand dataset [@ANTONIO201941]. The data collected from hotels all around the world ranges from bookings in 2015 to 2017. It is sourced from [this study](https://www.sciencedirect.com/science/article/pii/S2352340918315191#f0010). Due to the dataset being over 100,000 observations, we have limited the observations to be only hotels from the US. The general characteristics being measured in the data are the different aspects of booking and staying at a hotel. For example, out of the 32 variables, some of the ones we find great interest in are hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status. Therefore, each observation is one booking/stay at a specific hotel in America and all of its characteristics. Therefore, there can be multiple observations from the same hotel and even on the same time range. The full dataset dictionary can be found in the repository ReadMe. 
 
-### Resesarch Question 
+## Resesarch Question 
 
 To better understand the contributing factors to the daily rate of hotel rooms in the U.S., we will build models to:
 
 1) Evaluate the efficacy of this model to predict daily hotel room rates
 2) Evaluate the statistical significance of each predictor, identifying the strongest contributing factors. We include the following variables in our analysis: hotel type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status.
 
-### Exploratory data analysis
-
-
 #Appendix
-
-
 ```{r response-plot}
 ggplot(data = hotels, aes(x = adr, fill = hotel)) +
   geom_histogram() + 
@@ -201,9 +194,8 @@ print(resident_type_p_value)
 ```
 We are also particularly interested in using the presence of kids (children or babies) as a predictor of average daily rate. As an initial analysis, we perform a t-test on the the average daily rates of bookings for groups with only adults, versus groups with children or babies. This t-test assesses if there is a significant difference between the two distributions, which would indicate that the presence of kids is likely to be a useful predictor of average daily rate. In this analysis, we find that our t-test produces a p-value of 1.13e-33%. Because this p-value is very low, we conclude that there is a statistically significant relationship between the average daily hotel rates of groups with children or babies and groups with only adults in our dataset, which provides evidence that the presence of kids (children or babies) is a useful predictor of average daily hotel rates. 
 
-## Methodology
+# Methodology
 
-### Modeling Choices (Description) 
 - Data transformations (if applied)
 - Model Type Justification 
 - Model selection criteria 
@@ -265,8 +257,6 @@ nrow(hotel_test)
 ```
 
 
-
-
 ```{r}
 full_model <- lm(adr ~ ., data = hotels)
 #tidy(full_model) %>%
@@ -276,8 +266,6 @@ full_model <- lm(adr ~ ., data = hotels)
 ```{r results = "hide"}
 selected_model <- stats::step(full_model, scope=formula(full_model), direction="backward", k = log(nrow(hotels)))
 ```
-
-### Conditions Check For Linear Model  
 
 ```{r }
 # Residual + QQ Plots
@@ -296,9 +284,6 @@ no reason to believe that our samples are not independent from the survey, such 
 individual hotel bookings can be assumed to be independent. 
 
 From this analysis, we conclude that the conditions are met for performing linear regression. 
-
-
-### Diagnostics 
 
 ```{r}
 
@@ -339,7 +324,7 @@ Cook's distance is a composite measure of an observation's leverage and standard
 After calculating the model diagnostics, we have found that on observation can be classified as an outlier. However, due to the fact that this is a legitimate observation of our dataset, we have chosen to keep this point in our model.
 
 
-## Results
+# Results
 
 ```{r}
 #tidy(selected_model) %>%
@@ -354,8 +339,6 @@ tidy(model_interact, conf.int =.95) %>%
   kable(digits = 3)
 ```
 
-### Interpretations and Conclusions 
-
 The model provides a number of useful predictors for determining how the average daily rate or price of a hotel is affected by its customization. The first aspect when choosing a hotel may be the type of hotel one would like to visit. In this model we looked at the difference between staying in a hotel located in a city/urban setting versus staying in a resort style hotel. According the model, the coefficient for a resort hotel is -5.430. This can be interpreted as if a guest decides to stay in a resort hotel versus a city hotel, they are expected to pay on average \$5.43 less per day , holding all else constant. Because the p-value is very close to 0, we can also conclude that this is a significant statistic. Therefore, when deciding on a travel destination, it would be beneficial to consider the difference in price of a city or resort hotel. 
 
 Another important factor when planning a trip or booking a hotel is when you would like to travel or stay. The model covers a variety of predictors that involve the timing of a booking. For example, when considering which month to travel in, there is a possibility that depending on the month you book your stay, the average daily rate may be more expensive or less depending on the month. For example, the model identifies that the arrival date of a stay in August has a coefficient of 77.880. This can be interpreted as if a guest decides to book a stay during the month of August, they would be expected to pay on average \$77.88 more per day, holding all else constant. Additionally, according to the model, if a guest stayed in a hotel with an arrival date in April, May, June, July, August, September, October, or November, they would be expected to pay on average a higher daily rate than staying in the month of January. This is proved by the fact that the p-value for each coefficient of these months is approximately 0, and the 95% confidence interval does not include 0 and has both thresholds being positive values. On the other hand, the months of February, March, and December all have fairly large p-values and have 0 fall in the 95% confidence interval. Therefore, we can say that these months are not statistically different from the month of January, meaning that there will not be a significant difference in the average daily rate whether a guest stays in January or February, March, or December.
@@ -369,10 +352,6 @@ Another attribute that may effect the daily price of the hotel is the number of 
 Lastly, we will discuss how a meal plan can possibly change the average daily price of a hotel stay. In the variable meal, the baseline is if a guest were to get no meal plan. The coefficient for Bed and Breakfast has a coefficient of 21.739 and a p-value of approximately 0. Therefore, we can say that if one were to choose the meal plan Bed and Breakfast, they would pay on average \$21.74 more than if they did not buy a meal plan. Similarly for a Half Board meal plan (breakfast and one other meal), the guest is expected to pay on average $50.50 more per day for their hotel stay if they were to get the Half Board plan versus no meal plan. This interpretation is supported by the approximately 0 p-value for this coefficient. 
 
 In addition to discussing how the different predictors affect the average daily rate, one can also use the model to predict how much their hotel stay may cost in relation to these factors.
-
-
-###PREDICTINGGGG
-
 
 
 To determine the predictive ability of our model, we use the Root Mean Squared Error 
@@ -392,9 +371,8 @@ from the actual value by around $43.
 ```
 
 
+# Discussion and Conclusion
 
-
-### Model Assumptions, Limitations
 Our model assumes that hotel bookings are independent from each other, which could 
 potentially be broken in limited circumstances, such as competing hotel holiday 
 promotions.  
@@ -413,8 +391,6 @@ world without knowing what mapping was applied.
 In our exploratory analysis, we found that there were far more hotel bookings in 
 cities than in resorts. Given this skew, our model may better characterize city 
 bookings than resort bookings. 
-
-
 
 
 
