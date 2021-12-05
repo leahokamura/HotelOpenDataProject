@@ -2,7 +2,14 @@
 title: "Predicting the Cost of Hotel Booking in the United States"
 author: "LAM-duh: Xuliang Deng, Leah Okamura, Megan Richards"
 date: "Nov 15th, 2021"
-output: pdf_document
+output: 
+  pdf_document: 
+    toc: true
+    toc_depth: 1
+    number_sections: true
+
+#bibliography: references.bib
+link-citations: true
 ---
 
 ```{r setup, include=FALSE}
@@ -22,12 +29,12 @@ hotels <- read_csv("data/hotels_reduced.csv")
 
 ### Introduction 
 
-With the lifting of travel restrictions into the U.S. (https://www.nytimes.com/2021/09/22/travel/us-international-travel-vaccine.html) through the implementation of new travel guidelines, we believe that travel to the U.S. start to increase and look like as it did before the pandemic. Therefore, with travel and tourism in the U.S. increasing, we believe that the booking of hotels may start to increase as well. With this assumption, with the slower return to travel and society pre covid, we are interested in studying the characteristics of hotel room reservations in the United States. Specifically, we are interested in what relationship these characteristics have with the cost of a hotel. Our general research question is: How do the characteristics of a hotel booking affect the daily cost of a hotel stay in the United States? We believe there will be several significant points of relevance for understanding these relationships: understanding predictors of room cost could be used to help identify where new hotels could be successfully created, allow travelers to plan financially for future travel, allow hotels to predict future profit, etc. In this report, we are looking to use a variety of chosen models to understand the contributing factors to hotel room price, as well as identify the strongest predictors in the determining the avreage daily rate.
+[With the lifting of travel restrictions into the U.S.](https://www.nytimes.com/2021/09/22/travel/us-international-travel-vaccine.html) through the implementation of new travel guidelines, we believe that travel to the U.S. start to increase and look like as it did before the pandemic. Therefore, with travel and tourism in the U.S. increasing, we believe that the booking of hotels may start to increase as well. With this assumption, with the slower return to travel and society pre covid, we are interested in studying the characteristics of hotel room reservations in the United States. Specifically, we are interested in what relationship these characteristics have with the cost of a hotel. Our general research question is: How do the characteristics of a hotel booking affect the daily cost of a hotel stay in the United States? We believe there will be several significant points of relevance for understanding these relationships: understanding predictors of room cost could be used to help identify where new hotels could be successfully created, allow travelers to plan financially for future travel, allow hotels to predict future profit, etc. In this report, we are looking to use a variety of chosen models to understand the contributing factors to hotel room price, as well as identify the strongest predictors in the determining the avreage daily rate.
 
 ### Data 
 
-The source of the dataset is Tiny Tuesday, https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-11/readme.md.
-This data set was originally collected from an open hotel booking demand dataset from Antonio, Almeida and Nunes, 2019. The data collected from hotels all around the world ranges from bookings in 2015 to 2017. It is sourced from this study https://www.sciencedirect.com/science/article/pii/S2352340918315191#f0010. Due to the dataset being over 100,000 observations, we have limited the observations to be only hotels from the US. The general characteristics being measured in the data are the different aspects of booking and staying at a hotel. For example, out of the 32 variables, some of the ones we find great interest in are hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status. Therefore, each observation is one booking/stay at a specific hotel in America and all of its characteristics. Therefore, there can be multiple observations from the same hotel and even on the same time range. The full dataset dictionary can be found in the repository ReadMe. 
+The source of the dataset is [Tiny Tuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-11/readme.md).
+This data set was originally collected from an open hotel booking demand dataset from Antonio, Almeida and Nunes, 2019. The data collected from hotels all around the world ranges from bookings in 2015 to 2017. It is sourced from [this study](https://www.sciencedirect.com/science/article/pii/S2352340918315191#f0010). Due to the dataset being over 100,000 observations, we have limited the observations to be only hotels from the US. The general characteristics being measured in the data are the different aspects of booking and staying at a hotel. For example, out of the 32 variables, some of the ones we find great interest in are hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status. Therefore, each observation is one booking/stay at a specific hotel in America and all of its characteristics. Therefore, there can be multiple observations from the same hotel and even on the same time range. The full dataset dictionary can be found in the repository ReadMe. 
 
 ### Resesarch Question 
 
@@ -209,6 +216,8 @@ tidy(selected_model) %>%
   kable()
 ```
 
+
+
 ### Modeling 
 
 ```{r}
@@ -286,3 +295,8 @@ geom_smooth(method = "lm", se = FALSE) + labs(title = "PLotting of Outliers",
 ### Interpretations and Conclusions 
 
 
+
+# References
+
+
+<div id="refs"></div>
