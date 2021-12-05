@@ -224,13 +224,19 @@ model <- lm(adr ~ adults + children + babies + hotel + meal + reservation_status
 # Residual + QQ Plots
 autoplot(model, which = c(1,2))
 ```
-• Linearity The residuals are randomly scattered in the plot of residuals vs fitted, so the linearity condition is satisfied.
-• Constant variance: The spread of the residuals is approximately equal in the plot of residuals vs. fitted as the fitted value increases. There are a few outliers, but overall the spread of the residuals is equal. Therefore constant variance is satisfied.
-• Normality: The QQ-plot shows that the distribution of the residuals is skewed right, so this condition is not satisfied. However, the model is robust to deviations from normality for sample sizes greater than 30. Our sample size of 1447 is greater than 30, so we can proceed.
-• Independence: This condition is not met since there are multiple observations for most lemurs. These observations would be correlated
+To check that a linear model is applicable to this dataset, we check the following conditions: Linearity, Constant Variance, Normality, and Independence. 
+
+To check for Linearity, we look at the residuals vs fitted plot. We see that the residuals are randomly scattered, which indicates that the linearity condition is met. 
+
+To check for constant variance, we look at the spread of the residuals in the residuals vs fitted plot. We see that the spread of the residuals is approximately equal as the fitted value increases, indicating that the constant variance condition is satisfied.
+
+To check for normality, we look at the QQ-plot for a linear relationship. In the plot, we see a mostly linear relationship, and additionally recognize that our model is robust to deviations because our number of samples is much larger than 30. Therefore, we conclude that the normality condition is met. 
+
+To check for independence, we look at the study design, and find that there is 
+no reason to believe that our samples are not independent from the survey, such that 
+individual hotel bookings can be assumed to be independent. 
 
 From this analysis, we conclude that the conditions are met for performing  linear regression. 
-
 
 ## Results
 
