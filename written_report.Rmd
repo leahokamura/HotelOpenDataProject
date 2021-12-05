@@ -16,14 +16,15 @@ library(knitr)
 library(ggfortify)
 library(dplyr)
 library(Metrics)
-#install.packages("Metrics")
+library(tidyverse)
+library(patchwork)
+library(knitr)
+library(tidymodels)
+#install.packages("Rpdb")
 ``` 
 
 ```{r load-data,include=FALSE}
-hotels_total <- read_csv("data/hotels_reduced.csv")
-dt <- sort(sample(nrow(hotels_total), nrow(hotels_total)*.7))
-hotels <-hotels_total[dt,]
-hotels_test <-hotels_total[-dt,]
+hotels <- read_csv("data/hotels_reduced.csv")
 ```
 
 ### Introduction 
@@ -202,15 +203,28 @@ As of now, we know we are going to use hotel (Resort Hotel or City Hotel), compa
 
 We plan to use multiple linear regression with a variety of combinations of interested predictor variables and their interaction. Based on whether conditions or fit or not or based on the visualization, we believe we may be utilizing logarithmic regression as well. We would also be interested in seeing how stays in the weekend or the weekday may affect the average daily rate for a hotel, and if they differ between the two hotel types, City and Resort hotels.
 
+We randomly sample 30% of our data to be used for training, and 30% for testing. 
 
 ```{r}
-full_model <- lm(adr ~ ., data = hotels)
+set.seed(12121)
+hotel_split <- initial_split(hotels, prop = 0.8) #80% in the training set
+hotel_train <- training(hotel_split) 
+hotel_test <- testing(hotel_split)
+hotel_test <- hotel_test[!(hotel_test$meal=='Undefined'),]
+rownames(hotel_train) <- NULL
+rownames(hotel_test) <- NULL
+nrow(hotels)
+nrow(hotel_test)
+```
+
+```{r}
+full_model <- lm(adr ~ ., data = hotel_train)
 tidy(full_model) %>%
   kable(digits = 3)
 ```
 
 ```{r results = "hide"}
-selected_model <- step(full_model, scope=formula(full_model), direction="backward", k = log(nrow(hotels)))
+selected_model <- stats::step(full_model, scope=formula(full_model), direction="backward", k = log(nrow(hotel_train)))
 ```
 
 ```{r}
@@ -221,7 +235,7 @@ tidy(selected_model) %>%
 ### Modeling 
 
 ```{r}
-model <- lm(adr ~ adults + children + babies + hotel + meal + reservation_status, data = hotels)
+model <- lm(adr ~ adults + children + babies + hotel + meal + reservation_status, data = hotel_train)
 ```
 
 ### Conditions Check For Linear Model  
@@ -257,15 +271,20 @@ $$+106.033(mealUndefined)-12.809(reservationstatusCheck-Out) - 2.662(reservation
 
 To determine the predictive ability of our model, we use the Root Mean Squared Error 
 on both our training and test datasets below. We find a very similar error between 
-our training and test sets, and find that on average, our predictions differ 
-from the actual value by around $43. 
+our training and test sets, and find that on average, our predictions for the average
+daily rate of hotels differ from the actual value by around $42-$45. 
 
 ```{r}
-train_predictions <- model %>% predict(hotels)
-test_predictions <- model %>% predict(hotels_test)
+train_pred <- tibble(predicted = predict(model, hotel_train)) %>%
+                          bind_cols(hotel_train)
+train_pred %>%
+  rmse(truth = adr, estimate = predicted)
 
-rmse(train_predictions, hotels$adr)
-rmse(test_predictions, hotels_test$adr)
+test_pred <- tibble(predicted = predict(model, hotel_test)) %>%
+                          bind_cols(hotel_test)
+test_pred %>%
+  rmse(truth = adr, estimate = predicted)
+
 ```
 
 ### Diagnostics 
