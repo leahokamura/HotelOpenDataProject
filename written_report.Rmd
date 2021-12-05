@@ -277,7 +277,6 @@ potential influential points.
 
 Cook's distance is a composite measure of an observation's leverage and standardized residual, and is used to identify influential points. An observation is considered an influential point if it’s Cook’s distance is greater than 1.0. We find X observations with a Cook's distance greater than 1.0, and conclude that they are influential points. 
 
-
 Standardized residuals can be used to identify outliers, as observations that have standardized residuals of large magnitude don't fit the pattern determined by the regression model. We identify outliers as observations with standardized residuals with a magnitude greater than or equal to 3. We find X observations to be outliers.
 
 ```{r plot_outliers}
@@ -291,6 +290,25 @@ geom_smooth(method = "lm", se = FALSE) + labs(title = "PLotting of Outliers",
 ```
 
 ### Model Assumptions, Limitations
+Our model assumes that hotel bookings are independent from each other, which could 
+potentially be broken in limited circumstances, such as competing hotel holiday 
+promotions.  
+
+It's important to recognize that our model has several limitations. First, we recognize
+that the travel industry (including hotel booking) is incredibly vulnerable to 
+tragic circumstances or disasters, which are not accounted for in our model. For example, 
+we recognize that our model is not likely to characterize hotel bookings during COVID, given that our 
+data is limited to the years 2015 to 2017. 
+Additionally, we anticipate that the hotel room type (such as suite versus 
+individual room) would be an important predictor of hotel room price, but is not 
+included in our model. Our dataset included a variable for the room type, but it 
+was mapped to a anonymous letter system (A,B,C..) to protect industry knowledge. 
+We excluded this variable because it would be impossible to use in the real 
+world without knowing what mapping was applied. 
+In our exploratory analysis, we found that there were far more hotel bookings in 
+cities than in resorts. Given this skew, our model may better characterize city 
+bookings than resort bookings. 
+
 
 ### Interpretations and Conclusions 
 
