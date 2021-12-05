@@ -23,15 +23,14 @@ library(knitr)
 library(ggfortify)
 library(dplyr)
 library(Metrics)
-library(tidyverse)
-library(patchwork)
-library(knitr)
-library(tidymodels)
-#install.packages("Rpdb")
+#install.packages("Metrics")
 ``` 
 
 ```{r load-data,include=FALSE}
-hotels <- read_csv("data/hotels_reduced.csv")
+hotels_total <- read_csv("data/hotels_reduced.csv")
+dt <- sort(sample(nrow(hotels_total), nrow(hotels_total)*.7))
+hotels <-hotels_total[dt,]
+hotels_test <-hotels_total[-dt,]
 ```
 
 ### Introduction 
@@ -55,6 +54,7 @@ To better understand the contributing factors to the daily rate of hotel rooms i
 
 ### Exploratory data analysis
 
+#Appendix
 ```{r make-total-stay-var}
 hotels$total_stay_length <- hotels$stays_in_week_nights + hotels$stays_in_weekend_nights
 ```
@@ -82,6 +82,7 @@ kable(digits = 3)
 
 The response variable, adr, has a somewhat skewed right, bimodal distribution. The average or mean average daily rate is \$122.992 and the median is $115. Because the distribution is skewed, the median is most likely the best indicator for the center. The standard deviation is \$51.617 and the data ranges from \$0 to \$328.33 with an interquartile range of \$61.99.
 
+#Appendix
 ```{r}
 adults <- sum(hotels$adults)
 children <- sum(hotels$children)
@@ -93,6 +94,7 @@ kable(tb)
 
 This table provides insight on the type of people who were booking hotels in the U.S. during this time period. A large majority of customers were only adults with a total of 3,950 hotel bookings. The next largest customer group were people or adults with their children at a total of 362 bookings. Lastly, those who booked a stay with a baby was considerably less, with only 6 bookings.
 
+#Appendix
 ```{r}
 ggplot(data = hotels, aes(x = meal)) +
 geom_bar() +
@@ -100,7 +102,7 @@ labs(title = "Distribution of Meal Plan According to Booking Details",
       y = "Frequency",
       x = "Type of Meal Plan") 
 ```
-
+#Appendix
 ```{r}
 hotels %>%
   group_by(meal) %>%
@@ -110,6 +112,7 @@ hotels %>%
 
 We can see that majority of customer bookings chose the Bed and Breakfast plan (BB), rather than Half Board plan or Full Board (HB and SC). While this does reflect the choice of those booking the hotel, this visualization and dataset can also be influenced by what type of meal plan each hotel is offering. 
 
+#Appendix
 ```{r}
 ggplot(data = hotels, aes(x = reservation_status)) +
 geom_bar() +
@@ -172,22 +175,21 @@ hotel_type_p_value <- t.test(resort_adr, city_adr)$p.value
 print(hotel_type_p_value)
 ```
 
-
-We are also particularly interested in using the presence of kids (children or babies) as a predictor of average daily rate. As an initial analysis, we perform a t-test on the the average daily rates of bookings for groups with only adults, versus groups with children or babies. This t-test assesses if there is a significant difference between the two distributions, which would indicate that the presence of kids is likely to be a useful predictor of average daily rate. In this analysis, we find that our t-test produces a p-value of 1.13e-33%. Because this p-value is very low, we conclude that there is a statistically significant relationship between the average daily hotel rates of groups with children or babies and groups with only adults in our dataset, which provides evidence that the presence of kids (children or babies) is a useful predictor of average daily hotel rates. 
-
-
-
 ```{r adult-t-test}
-hotels$only_adults_present <- hotels$adults > 0 & hotels$children == 0 & hotels$babies == 0
-hotels$kids_present <- hotels$children > 0 | hotels$babies > 0
+hotels <-hotels%>%
+  mutate(children_present = case_when
+         (hotels$adults > 0 & hotels$children == 0 & hotels$babies == 0 ~ 0,
+          hotels$children > 0 | hotels$babies > 0 ~ 1), 
+         children_present = factor(children_present, 
+                          levels = c(0,1)))
 
-adult_adr <- hotels[hotels$only_adults_present == TRUE,]$adr
-kids_adr <- hotels[hotels$kids_present == TRUE,]$adr
+adult_adr <- hotels[hotels$children_present == 0,]$adr
+kids_adr <- hotels[hotels$children_present == 1,]$adr
 
 resident_type_p_value <- t.test(adult_adr, kids_adr)$p.value
 print(resident_type_p_value)
 ```
-
+We are also particularly interested in using the presence of kids (children or babies) as a predictor of average daily rate. As an initial analysis, we perform a t-test on the the average daily rates of bookings for groups with only adults, versus groups with children or babies. This t-test assesses if there is a significant difference between the two distributions, which would indicate that the presence of kids is likely to be a useful predictor of average daily rate. In this analysis, we find that our t-test produces a p-value of 1.13e-33%. Because this p-value is very low, we conclude that there is a statistically significant relationship between the average daily hotel rates of groups with children or babies and groups with only adults in our dataset, which provides evidence that the presence of kids (children or babies) is a useful predictor of average daily hotel rates. 
 
 ## Methodology
 
@@ -201,37 +203,44 @@ print(resident_type_p_value)
 It is important to note that there are a few variables in the dataset that do not provide insight to our research question and as a result we will remove from the dataset. First is the category `hotels$country`, due to the fact that every hotel in this subset of the data is located in the U.S., this is a redundant variable. Next, the two variables `hotels$reserved_room_type` and `hotels$assigned_room_type` are both categorical variables that have letters assigned to each room type. However, due to the confidentiality of the customers, the classification of these letters have not been identified by those who collected the data. Therefore, we will be removing these variables from the dataset.
 
 ```{r}
-hotels$country <- NULL 
-hotels$reserved_room_type <- NULL 
-hotels$assigned_room_type <- NULL 
+
+hotels <- subset(hotels, select = -country)
+hotels <- subset(hotels, select = -reserved_room_type)
+hotels <- subset(hotels, select = -assigned_room_type)
+hotels <- subset(hotels, select = -agent)
+hotels <- subset(hotels, select = -company)
+hotels <- subset(hotels, select = -reservation_status_date)
+
+
+
+
+if (hotels$arrival_date_week_number >=36 & hotels$arrival_date_week_number<=39)
+{hotels$arrival_date_month = "September"}
+if (hotels$arrival_date_week_number >=1 & hotels$arrival_date_week_number<=4)
+{hotels$arrival_date_month = "January"}
+
+  
+hotels <- hotels%>%
+  mutate(arrival_date_month = factor(arrival_date_month, 
+  levels = c("January", "February", "March", "April",
+           "May", "June", "July", "August",
+           "September", "October", "November",
+           "December")))
 ```
 
 As of now, we know we are going to use hotel (Resort Hotel or City Hotel), company, customer_type, stays_in_weekend_nights, stays_in_week_nights, and  meal(type of meal) as predictor variables. We are interested in how the food is served at a hotel and what type of hotel can indicate how much a night in a hotel could cost. As we explore more of the relationships in our dataset, we may add other possible predictor variables as we see fit.
 
 We plan to use multiple linear regression with a variety of combinations of interested predictor variables and their interaction. Based on whether conditions or fit or not or based on the visualization, we believe we may be utilizing logarithmic regression as well. We would also be interested in seeing how stays in the weekend or the weekday may affect the average daily rate for a hotel, and if they differ between the two hotel types, City and Resort hotels.
 
-We randomly sample 30% of our data to be used for training, and 30% for testing. 
 
 ```{r}
-set.seed(12121)
-hotel_split <- initial_split(hotels, prop = 0.8) #80% in the training set
-hotel_train <- training(hotel_split) 
-hotel_test <- testing(hotel_split)
-hotel_test <- hotel_test[!(hotel_test$meal=='Undefined'),]
-rownames(hotel_train) <- NULL
-rownames(hotel_test) <- NULL
-nrow(hotels)
-nrow(hotel_test)
-```
-
-```{r}
-full_model <- lm(adr ~ ., data = hotel_train)
+full_model <- lm(adr ~ ., data = hotels)
 tidy(full_model) %>%
   kable(digits = 3)
 ```
 
 ```{r results = "hide"}
-selected_model <- stats::step(full_model, scope=formula(full_model), direction="backward", k = log(nrow(hotel_train)))
+selected_model <- step(full_model, scope=formula(full_model), direction="backward", k = log(nrow(hotels)))
 ```
 
 ```{r}
@@ -244,7 +253,7 @@ tidy(selected_model) %>%
 ### Modeling 
 
 ```{r}
-model <- lm(adr ~ adults + children + babies + hotel + meal + reservation_status, data = hotel_train)
+model <- lm(adr ~ adults + children + babies + hotel + meal + reservation_status, data = hotels)
 ```
 
 ### Conditions Check For Linear Model  
@@ -280,20 +289,15 @@ $$+106.033(mealUndefined)-12.809(reservationstatusCheck-Out) - 2.662(reservation
 
 To determine the predictive ability of our model, we use the Root Mean Squared Error 
 on both our training and test datasets below. We find a very similar error between 
-our training and test sets, and find that on average, our predictions for the average
-daily rate of hotels differ from the actual value by around $42-$45. 
+our training and test sets, and find that on average, our predictions differ 
+from the actual value by around $43. 
 
 ```{r}
-train_pred <- tibble(predicted = predict(model, hotel_train)) %>%
-                          bind_cols(hotel_train)
-train_pred %>%
-  rmse(truth = adr, estimate = predicted)
+train_predictions <- model %>% predict(hotels)
+test_predictions <- model %>% predict(hotels_test)
 
-test_pred <- tibble(predicted = predict(model, hotel_test)) %>%
-                          bind_cols(hotel_test)
-test_pred %>%
-  rmse(truth = adr, estimate = predicted)
-
+rmse(train_predictions, hotels$adr)
+rmse(test_predictions, hotels_test$adr)
 ```
 
 ### Diagnostics 
