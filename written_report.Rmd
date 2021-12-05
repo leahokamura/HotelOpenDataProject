@@ -18,19 +18,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r load-packages,include=FALSE}
 library(tidyverse)
-library(broom)
+library(patchwork)
 library(knitr)
-library(ggfortify)
-library(dplyr)
-library(Metrics)
-#install.packages("Metrics")
+library(tidymodels)
+#install.packages("Rpdb")
 ``` 
 
 ```{r load-data,include=FALSE}
-hotels_total <- read_csv("data/hotels_reduced.csv")
-dt <- sort(sample(nrow(hotels_total), nrow(hotels_total)*.7))
-hotels <-hotels_total[dt,]
-hotels_test <-hotels_total[-dt,]
+hotels <- read_csv("data/hotels_reduced.csv")
 ```
 
 ### Introduction 
@@ -234,6 +229,19 @@ We plan to use multiple linear regression with a variety of combinations of inte
 
 
 ```{r}
+set.seed(12121)
+hotel_split <- initial_split(hotels, prop = 0.8) #80% in the training set
+hotel_train <- training(hotel_split) 
+hotel_test <- testing(hotel_split)
+hotel_test <- hotel_test[!(hotel_test$meal=='Undefined'),]
+rownames(hotel_train) <- NULL
+rownames(hotel_test) <- NULL
+nrow(hotels)
+nrow(hotel_test)
+```
+
+
+```{r}
 full_model <- lm(adr ~ ., data = hotels)
 tidy(full_model) %>%
   kable(digits = 3)
@@ -293,11 +301,14 @@ our training and test sets, and find that on average, our predictions differ
 from the actual value by around $43. 
 
 ```{r}
-train_predictions <- model %>% predict(hotels)
-test_predictions <- model %>% predict(hotels_test)
-
-rmse(train_predictions, hotels$adr)
-rmse(test_predictions, hotels_test$adr)
+train_pred <- tibble(predicted = predict(model, hotel_train)) %>%
+                          bind_cols(hotel_train)
+train_pred %>%
+  rmse(truth = adr, estimate = predicted)
+test_pred <- tibble(predicted = predict(model, hotel_test)) %>%
+                          bind_cols(hotel_test)
+test_pred %>%
+  rmse(truth = adr, estimate = predicted)
 ```
 
 ### Diagnostics 
