@@ -2,7 +2,14 @@
 title: "Predicting the Cost of Hotel Booking in the United States"
 author: "LAM-duh: Xuliang Deng, Leah Okamura, Megan Richards"
 date: "Nov 15th, 2021"
-output: pdf_document
+output: 
+  pdf_document: 
+    toc: true
+    toc_depth: 1
+    number_sections: true
+
+#bibliography: references.bib
+link-citations: true
 ---
 
 ```{r setup, include=FALSE}
@@ -22,15 +29,15 @@ hotels <- read_csv("data/hotels_reduced.csv")
 
 ### Introduction 
 
-Hotels are a critical component of the travel sector in the U.S., with an estimated 5.3 million guest rooms, and supporting 1 in 25 American jobs on average prior to 2020 [https://www.ahla.com/sites/default/files/2021_state_of_the_industry_0.pdf]. A 2018 report showed that 
-approximately two thirds of Americans book their hotels directly through hotel websites [https://www.trekksoft.com/en/blog/65-travel-tourism-statistics-for-2019], and a 2019 analysis showed large
-discrepancies in consumer travel cost based on how consumers chose to prioritize booking lodging compared to activities [https://globalnews.booking.com/bookingcom-reveals-key-findings-from-its-2019-sustainable-travel-report/]. 
+Hotels are a critical component of the travel sector in the U.S., with an estimated 5.3 million guest rooms, and supporting 1 in 25 American jobs on average prior to 2020 based on [this source](https://www.ahla.com/sites/default/files/2021_state_of_the_industry_0.pdf). [A 2018 report](https://www.trekksoft.com/en/blog/65-travel-tourism-statistics-for-2019) showed that 
+approximately two thirds of Americans book their hotels directly through hotel websites, and [a 2019 analysis](https://globalnews.booking.com/bookingcom-reveals-key-findings-from-its-2019-sustainable-travel-report/) showed large
+discrepancies in consumer travel cost based on how consumers chose to prioritize booking lodging compared to activities. 
 We are interested in analyzing U.S. hotel bookings, with the goal of providing insight to consumers on the factors that affect their hotel cost.Our general research question is: How do the characteristics of a hotel booking affect the daily cost of a hotel stay in the United States? We believe there will be several significant points of relevance for understanding these relationships: understanding predictors of room cost could be used to help travelers to plan financially for future travel, or to potentially reduce cost. In this report, we are looking to use a variety of chosen models to understand the contributing factors to the average daily rate of a hotel room, as well as identify the strongest predictors.
 
 ### Data 
 
-The source of the dataset is Tiny Tuesday, https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-11/readme.md.
-This data set was originally collected from an open hotel booking demand dataset from Antonio, Almeida and Nunes, 2019. The data collected from hotels all around the world ranges from bookings in 2015 to 2017. It is sourced from this study https://www.sciencedirect.com/science/article/pii/S2352340918315191#f0010. Due to the dataset being over 100,000 observations, we have limited the observations to be only hotels from the US. The general characteristics being measured in the data are the different aspects of booking and staying at a hotel. For example, out of the 32 variables, some of the ones we find great interest in are hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status. Therefore, each observation is one booking/stay at a specific hotel in America and all of its characteristics. Therefore, there can be multiple observations from the same hotel and even on the same time range. The full dataset dictionary can be found in the repository ReadMe. 
+The source of the dataset is [Tiny Tuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-11/readme.md).
+This data set was originally collected from an open hotel booking demand dataset from Antonio, Almeida and Nunes, 2019. The data collected from hotels all around the world ranges from bookings in 2015 to 2017. It is sourced from [this study](https://www.sciencedirect.com/science/article/pii/S2352340918315191#f0010). Due to the dataset being over 100,000 observations, we have limited the observations to be only hotels from the US. The general characteristics being measured in the data are the different aspects of booking and staying at a hotel. For example, out of the 32 variables, some of the ones we find great interest in are hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status. Therefore, each observation is one booking/stay at a specific hotel in America and all of its characteristics. Therefore, there can be multiple observations from the same hotel and even on the same time range. The full dataset dictionary can be found in the repository ReadMe. 
 
 ### Resesarch Question 
 
@@ -212,6 +219,8 @@ tidy(selected_model) %>%
   kable()
 ```
 
+
+
 ### Modeling 
 
 ```{r}
@@ -313,3 +322,8 @@ bookings than resort bookings.
 ### Interpretations and Conclusions 
 
 
+
+# References
+
+
+<div id="refs"></div>
