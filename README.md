@@ -32,7 +32,6 @@ by LAM-duh
 Undefined/SC – no meal package;
 BB – Bed & Breakfast;
 HB – Half board (breakfast and one other meal – usually dinner);
-FB – Full board (breakfast, lunch and dinner)
 
  - `market_segment` (character) : Market segment designation. In categories, the term “TA” means “Travel Agents” and “TO” means “Tour Operators”
 
