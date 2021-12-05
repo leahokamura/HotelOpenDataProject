@@ -43,30 +43,24 @@ library(ggplot2)
 hotels <- read_csv("data/hotels_reduced.csv")
 ```
 
-### Introduction 
+# Introduction/Data 
 
 Hotels are a critical component of the travel sector in the U.S., with an estimated 5.3 million guest rooms, and supporting 1 in 25 American jobs on average prior to 2020 based on [this source](https://www.ahla.com/sites/default/files/2021_state_of_the_industry_0.pdf). [A 2018 report](https://www.trekksoft.com/en/blog/65-travel-tourism-statistics-for-2019) showed that 
 approximately two thirds of Americans book their hotels directly through hotel websites, and [a 2019 analysis](https://globalnews.booking.com/bookingcom-reveals-key-findings-from-its-2019-sustainable-travel-report/) showed large
 discrepancies in consumer travel cost based on how consumers chose to prioritize booking lodging compared to activities. 
 We are interested in analyzing U.S. hotel bookings, with the goal of providing insight to consumers on the factors that affect their hotel cost.Our general research question is: How do the characteristics of a hotel booking affect the daily cost of a hotel stay in the United States? We believe there will be several significant points of relevance for understanding these relationships: understanding predictors of room cost could be used to help travelers to plan financially for future travel, or to potentially reduce cost. In this report, we are looking to use a variety of chosen models to understand the contributing factors to the average daily rate of a hotel room, as well as identify the strongest predictors.
 
-### Data 
-
 The source of the dataset is [Tiny Tuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-11/readme.md).
 This data set was originally collected from an open hotel booking demand dataset [@ANTONIO201941]. The data collected from hotels all around the world ranges from bookings in 2015 to 2017. It is sourced from [this study](https://www.sciencedirect.com/science/article/pii/S2352340918315191#f0010). Due to the dataset being over 100,000 observations, we have limited the observations to be only hotels from the US. The general characteristics being measured in the data are the different aspects of booking and staying at a hotel. For example, out of the 32 variables, some of the ones we find great interest in are hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status. Therefore, each observation is one booking/stay at a specific hotel in America and all of its characteristics. Therefore, there can be multiple observations from the same hotel and even on the same time range. The full dataset dictionary can be found in the repository ReadMe. 
 
-### Resesarch Question 
+## Resesarch Question 
 
 To better understand the contributing factors to the daily rate of hotel rooms in the U.S., we will build models to:
 
 1) Evaluate the efficacy of this model to predict daily hotel room rates
 2) Evaluate the statistical significance of each predictor, identifying the strongest contributing factors. We include the following variables in our analysis: hotel type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status.
 
-### Exploratory data analysis
-
 #Appendix
-
-
 ```{r response-plot}
 ggplot(data = hotels, aes(x = adr)) +
   geom_histogram(fill = 2) + 
@@ -200,9 +194,8 @@ print(resident_type_p_value)
 ```
 We are also particularly interested in using the presence of kids (children or babies) as a predictor of average daily rate. As an initial analysis, we perform a t-test on the the average daily rates of bookings for groups with only adults, versus groups with children or babies. This t-test assesses if there is a significant difference between the two distributions, which would indicate that the presence of kids is likely to be a useful predictor of average daily rate. In this analysis, we find that our t-test produces a p-value of 1.13e-33%. Because this p-value is very low, we conclude that there is a statistically significant relationship between the average daily hotel rates of groups with children or babies and groups with only adults in our dataset, which provides evidence that the presence of kids (children or babies) is a useful predictor of average daily hotel rates. 
 
-## Methodology
+# Methodology
 
-### Modeling Choices (Description) 
 - Data transformations (if applied)
 - Model Type Justification 
 - Model selection criteria 
@@ -214,6 +207,11 @@ It is important to note that there are a few variables in the dataset that do no
 
 ```{r}
 
+if (hotels$arrival_date_week_number >=36 & hotels$arrival_date_week_number<=39)
+{hotels$arrival_date_month = "September"}
+if (hotels$arrival_date_week_number >=1 & hotels$arrival_date_week_number<=4)
+{hotels$arrival_date_month = "January"}
+
 hotels <- na.omit(hotels)
 hotels <- subset(hotels, select = -country)
 hotels <- subset(hotels, select = -reserved_room_type)
@@ -223,13 +221,8 @@ hotels <- subset(hotels, select = -company)
 hotels <- subset(hotels, select = -reservation_status_date)
 hotels <- subset(hotels, select = -previous_cancellations)
 hotels <- subset(hotels, select = -reservation_status)
+hotels <- subset(hotels, select = -arrival_date_week_number)
 
-
-
-if (hotels$arrival_date_week_number >=36 & hotels$arrival_date_week_number<=39)
-{hotels$arrival_date_month = "September"}
-if (hotels$arrival_date_week_number >=1 & hotels$arrival_date_week_number<=4)
-{hotels$arrival_date_month = "January"}
 
   
 hotels <- hotels%>%
@@ -264,28 +257,15 @@ nrow(hotel_test)
 ```
 
 
-
-
 ```{r}
 full_model <- lm(adr ~ ., data = hotels)
-tidy(full_model) %>%
-  kable(digits = 3)
+#tidy(full_model) %>%
+#  kable(digits = 3)
 ```
 
 ```{r results = "hide"}
 selected_model <- stats::step(full_model, scope=formula(full_model), direction="backward", k = log(nrow(hotels)))
 ```
-
-```{r}
-tidy(selected_model) %>%
-  kable()
-```
-
-
-### Modeling 
-
-
-### Conditions Check For Linear Model  
 
 ```{r }
 # Residual + QQ Plots
@@ -303,14 +283,81 @@ To check for independence, we look at the study design, and find that there is
 no reason to believe that our samples are not independent from the survey, such that 
 individual hotel bookings can be assumed to be independent. 
 
-From this analysis, we conclude that the conditions are met for performing  linear regression. 
+From this analysis, we conclude that the conditions are met for performing linear regression. 
 
-## Results
+```{r}
+
+autoplot(selected_model, which = 1, ncol =1, colour = 'hotel')
+autoplot(selected_model, which = 3, ncol =1, colour = 'hotel')
+autoplot(selected_model, which = 4, ncol =1, colour = 'hotel')
+
+```
+
+```{r}
+autoplot(selected_model, which = c(3, 4, 5), colour = "red")
 
 
-$$\hat{Average Daily Rate} = 79.723	 + 79.723	(adults) + 35.169(children)$$
-$$ -22.637(babies) + 2.353(hotel Resort Hotel) + 33.779 (mealHB) - 17.205(mealSc)$$
-$$+106.033(mealUndefined)-12.809(reservationstatusCheck-Out) - 2.662(reservationstatusNo-Show)$$
+#Leverage 
+
+lev_threshold <- 2 * (16+1) / nrow(hotels) 
+hotel_aug <- augment(selected_model) 
+
+hotel_aug %>%
+filter(.hat > lev_threshold) %>% 
+nrow()
+
+
+# High Magnitude Residual 
+hotel_aug %>%
+filter(.std.resid < -3 | .std.resid > 3) %>%
+nrow()
+
+# Influential Point 
+hotel_aug %>%
+filter(.cooksd > 0.5) %>% 
+nrow()
+```
+We use leverage and Cook's Distance to identify influential observations in our dataset, and use standardized residuals to identify outliers. 
+
+Leverage is a measure of the distance between an observation's values of the predictor variables and the average values of the predictor variables for the entire data set. We define a high leverage point as having a leverage greater than $ 2(p+1) /n  $, where p is the number of predictors and n is the number of observations. We find 448 observations to be high leverage, and consider them to be
+potential influential points. 
+
+Standardized residuals can be used to identify potential outliers, as observations that have standardized residuals of large magnitude don't fit the pattern determined by the regression model. We identify potential outliers as observations with standardized residuals with a magnitude greater than or equal to 3. We find 22 observations to be potential outliers.
+
+Cook's distance is a composite measure of an observation's leverage and standardized residual, and is used to identify influential points. An observation is considered a moderately influential point if it’s Cook’s distance is greater than 0.5. We find 1 observation with a Cook's distance greater than 0.5. Therefore, we can conclude that there is 1 moderately influential point. 
+
+After calculating the model diagnostics, we have found that on observation can be classified as an outlier. However, due to the fact that this is a legitimate observation of our dataset, we have chosen to keep this point in our model.
+
+
+# Results
+
+```{r}
+#tidy(selected_model) %>%
+ # kable()
+```
+
+
+```{r}
+model_interact <- lm(adr ~ hotel + is_canceled + lead_time + arrival_date_year + arrival_date_month + arrival_date_day_of_month + stays_in_week_nights + adults + children + meal + distribution_channel + is_repeated_guest + previous_bookings_not_canceled + days_in_waiting_list + total_of_special_requests + arrival_date_month*arrival_date_day_of_month, data = hotels)
+
+tidy(model_interact, conf.int =.95) %>%
+  kable(digits = 3)
+```
+
+The model provides a number of useful predictors for determining how the average daily rate or price of a hotel is affected by its customization. The first aspect when choosing a hotel may be the type of hotel one would like to visit. In this model we looked at the difference between staying in a hotel located in a city/urban setting versus staying in a resort style hotel. According the model, the coefficient for a resort hotel is -5.430. This can be interpreted as if a guest decides to stay in a resort hotel versus a city hotel, they are expected to pay on average \$5.43 less per day , holding all else constant. Because the p-value is very close to 0, we can also conclude that this is a significant statistic. Therefore, when deciding on a travel destination, it would be beneficial to consider the difference in price of a city or resort hotel. 
+
+Another important factor when planning a trip or booking a hotel is when you would like to travel or stay. The model covers a variety of predictors that involve the timing of a booking. For example, when considering which month to travel in, there is a possibility that depending on the month you book your stay, the average daily rate may be more expensive or less depending on the month. For example, the model identifies that the arrival date of a stay in August has a coefficient of 77.880. This can be interpreted as if a guest decides to book a stay during the month of August, they would be expected to pay on average \$77.88 more per day, holding all else constant. Additionally, according to the model, if a guest stayed in a hotel with an arrival date in April, May, June, July, August, September, October, or November, they would be expected to pay on average a higher daily rate than staying in the month of January. This is proved by the fact that the p-value for each coefficient of these months is approximately 0, and the 95% confidence interval does not include 0 and has both thresholds being positive values. On the other hand, the months of February, March, and December all have fairly large p-values and have 0 fall in the 95% confidence interval. Therefore, we can say that these months are not statistically different from the month of January, meaning that there will not be a significant difference in the average daily rate whether a guest stays in January or February, March, or December.
+
+Not only is the month of stay important, but the day within a month may also be an important factor in the price of a hotel stay. The model gives a coefficient of -0.562 for the arrival date day of the month, but has a p-value of 0.208. Because this p-value is larger than the $\alpha$ = 0.05 level, we can say that the date of the month is not statistically significant. This is further proved by the 95% confidence interval (-1.435, 0.312), where 0 falls in the interval. Therefore, the arrival date in relation to the day of the month is not a useful predictor for the average daily rate of a hotel stay. 
+
+Additionally, when looking at the interaction between the day of the month and the month, we can see that maybe staying at a certain time within a certain month may have an effect in the cost. The months of March, July, September, and December all had p-values less than $\alpha$ = 0.05 level, so we can conclude that they are statistically significant. This means that the effect of Month of arrival date on the average daily rate is statistically different for July, September, and December. 
+
+Another attribute that may effect the daily price of the hotel is the number of guests and more specifically, the number of adults in the reservation. The model gives a coefficient of 21.456 and a p-value of 0 showing this coefficient is statistically significant. Therefore, we can conclude that for every additional adult added to the reservation, the average daily price of a hotel will increase on average \$21.46, holding all else constant. From this, a pretty good estimate can be made about how much the daily rate will change with the number of adults under the reservation. This can similarly be applied to the number of children staying under a reservation. For every additional child added to the reservation, the average daily price of a hotel will increase on average \$32.02, holding all else constant. We can be confident in this interpretation as the p-value is approximately 0 and 0 does not fall in the 95% confidence interval. Therefore, more children under a reservation will result in an increase of the average daily rate. 
+
+Lastly, we will discuss how a meal plan can possibly change the average daily price of a hotel stay. In the variable meal, the baseline is if a guest were to get no meal plan. The coefficient for Bed and Breakfast has a coefficient of 21.739 and a p-value of approximately 0. Therefore, we can say that if one were to choose the meal plan Bed and Breakfast, they would pay on average \$21.74 more than if they did not buy a meal plan. Similarly for a Half Board meal plan (breakfast and one other meal), the guest is expected to pay on average $50.50 more per day for their hotel stay if they were to get the Half Board plan versus no meal plan. This interpretation is supported by the approximately 0 p-value for this coefficient. 
+
+In addition to discussing how the different predictors affect the average daily rate, one can also use the model to predict how much their hotel stay may cost in relation to these factors.
+
 
 To determine the predictive ability of our model, we use the Root Mean Squared Error 
 on both our training and test datasets below. We find a very similar error between 
@@ -328,47 +375,9 @@ from the actual value by around $43.
 #  rmse(truth = adr, estimate = predicted)
 ```
 
-### Diagnostics 
 
-```{r}
-autoplot(selected_model, which = c(3, 4, 5), colour = "red")
+# Discussion and Conclusion
 
-#Leverage 
-lev_threshold <- 2 * 2 / nrow(hotels) 
-hotel_aug <- augment(selected_model) 
-
-hotel_aug %>%
-filter(.hat > lev_threshold) %>% nrow()
-
-# High Magnitude Residual 
-hotel_aug %>%
-filter(.std.resid < -3 | .std.resid > 3) %>% nrow()
-
-# Influential Point 
-hotel_aug %>%
-filter(.cooksd > 1.0) %>% nrow()
- 
-```
-We use leverage and Cook's Distance to identify influential observations in our dataset, and use standardized residuals to identify outliers. 
-
-Leverage is a measure of the distance between an observation's values of the predictor variables and the average values of the predictor variables for the entire data set. We define a high leverage point as having a leverage greater than $ 2(p+1) /n  $, where p is the number of predictors and n is the number of observations. We find X observations to be high leverage, and consider them to be
-potential influential points. 
-
-Cook's distance is a composite measure of an observation's leverage and standardized residual, and is used to identify influential points. An observation is considered an influential point if it’s Cook’s distance is greater than 1.0. We find X observations with a Cook's distance greater than 1.0, and conclude that they are influential points. 
-
-Standardized residuals can be used to identify outliers, as observations that have standardized residuals of large magnitude don't fit the pattern determined by the regression model. We identify outliers as observations with standardized residuals with a magnitude greater than or equal to 3. We find X observations to be outliers.
-
-```{r plot_outliers}
-hotel_aug <- hotel_aug %>%
-mutate(outlier = if_else(.std.resid < -3 | .std.resid > 3, "Yes", "No"))
-
-ggplot(hotel_aug, aes(x = adults, y = adr)) + geom_point(aes(color = outlier)) +
-geom_smooth(method = "lm", se = FALSE) + labs(title = "Plotting of Outliers",
-      y = "Average Daily Rate",
-      x = "Adults") 
-```
-
-### Model Assumptions, Limitations
 Our model assumes that hotel bookings are independent from each other, which could 
 potentially be broken in limited circumstances, such as competing hotel holiday 
 promotions.  
@@ -388,14 +397,6 @@ In our exploratory analysis, we found that there were far more hotel bookings in
 cities than in resorts. Given this skew, our model may better characterize city 
 bookings than resort bookings. 
 
-
-### Interpretations and Conclusions 
-
-$$\hat{Average Daily Rate} = 79.723	 + 79.723	(adults) + 35.169(children)$$
-$$ -22.637(babies) + 2.353(hotel Resort Hotel) + 33.779 (mealHB) - 17.205(mealSc)$$
-$$+106.033(mealUndefined)-12.809(reservationstatusCheck-Out) - 2.662(reservationstatusNo-Show)$$
-It does not make sense to interpret the intercept because there will be no case where people are not included in one of the adults, children, or babies categories. The slope for adults means that for each additional number of adults, the average daily rate of hotel is expected to increase by 79.723 dollars. The slope for children means that for each additional number of children, the average daily rate of hotel is expected to increase by 35.169 dollars. The slope for babies means that for each additional number of babies, the average daily rate of hotel is expected to decrease by 22.637 dollars. The slope for hotelResortHotel means that if the hotel is resort hotel instead of city hotel, the average daily rate of hotel is expected to increase by 2.353 dollars. The slope for mealHB, mealSc, mealUndefined means that if selected meal is half board (breakfast and dinner), the average daily rate of hotel is expected to increase by 33.779 dollars, and if selected meal is undefined or SC, the average daily rate of hotel is expected to increase 
-If the reservation last status is 
 
 
 # References
