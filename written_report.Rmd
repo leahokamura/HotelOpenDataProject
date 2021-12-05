@@ -21,6 +21,8 @@ library(tidyverse)
 library(patchwork)
 library(knitr)
 library(tidymodels)
+library(ggfortify)
+library(ggplot2)
 #install.packages("Rpdb")
 ``` 
 
@@ -50,9 +52,7 @@ To better understand the contributing factors to the daily rate of hotel rooms i
 ### Exploratory data analysis
 
 #Appendix
-```{r make-total-stay-var}
-hotels$total_stay_length <- hotels$stays_in_week_nights + hotels$stays_in_weekend_nights
-```
+
 
 ```{r response-plot}
 ggplot(data = hotels, aes(x = adr)) +
@@ -198,15 +198,18 @@ We are also particularly interested in using the presence of kids (children or b
 
 It is important to note that there are a few variables in the dataset that do not provide insight to our research question and as a result we will remove from the dataset. First is the category `hotels$country`, due to the fact that every hotel in this subset of the data is located in the U.S., this is a redundant variable. Next, the two variables `hotels$reserved_room_type` and `hotels$assigned_room_type` are both categorical variables that have letters assigned to each room type. However, due to the confidentiality of the customers, the classification of these letters have not been identified by those who collected the data. Therefore, we will be removing these variables from the dataset.
 
+
 ```{r}
 
+hotels <- na.omit(hotels)
 hotels <- subset(hotels, select = -country)
 hotels <- subset(hotels, select = -reserved_room_type)
 hotels <- subset(hotels, select = -assigned_room_type)
 hotels <- subset(hotels, select = -agent)
 hotels <- subset(hotels, select = -company)
 hotels <- subset(hotels, select = -reservation_status_date)
-
+hotels <- subset(hotels, select = -previous_cancellations)
+hotels <- subset(hotels, select = -reservation_status)
 
 
 
@@ -221,7 +224,13 @@ hotels <- hotels%>%
   levels = c("January", "February", "March", "April",
            "May", "June", "July", "August",
            "September", "October", "November",
-           "December")))
+           "December")), 
+          arrival_date_year = factor(arrival_date_year, 
+                                     levels = c(2015, 2016, 2017)),
+          meal = case_when(meal == "SC" | meal == "Undefined" ~ "None",
+                           meal == "BB" ~ "BB",
+                           meal == "HB" ~ "HB"),
+          meal = factor(meal, levels = c("None", "BB", "HB")))
 ```
 
 As of now, we know we are going to use hotel (Resort Hotel or City Hotel), company, customer_type, stays_in_weekend_nights, stays_in_week_nights, and  meal(type of meal) as predictor variables. We are interested in how the food is served at a hotel and what type of hotel can indicate how much a night in a hotel could cost. As we explore more of the relationships in our dataset, we may add other possible predictor variables as we see fit.
@@ -242,6 +251,8 @@ nrow(hotel_test)
 ```
 
 
+
+
 ```{r}
 full_model <- lm(adr ~ ., data = hotels)
 tidy(full_model) %>%
@@ -249,7 +260,7 @@ tidy(full_model) %>%
 ```
 
 ```{r results = "hide"}
-selected_model <- step(full_model, scope=formula(full_model), direction="backward", k = log(nrow(hotels)))
+selected_model <- stats::step(full_model, scope=formula(full_model), direction="backward", k = log(nrow(hotels)))
 ```
 
 ```{r}
@@ -258,18 +269,14 @@ tidy(selected_model) %>%
 ```
 
 
-
 ### Modeling 
 
-```{r}
-model <- lm(adr ~ adults + children + babies + hotel + meal + reservation_status, data = hotels)
-```
 
 ### Conditions Check For Linear Model  
 
 ```{r }
 # Residual + QQ Plots
-autoplot(model, which = c(1,2))
+autoplot(selected_model, which = c(1,2))
 ```
 To check that a linear model is applicable to this dataset, we check the following conditions: Linearity, Constant Variance, Normality, and Independence. 
 
@@ -287,10 +294,6 @@ From this analysis, we conclude that the conditions are met for performing  line
 
 ## Results
 
-```{r modeling}
-tidy(model, conf.int = TRUE) %>%
-kable(digits = 3)
-```
 
 $$\hat{Average Daily Rate} = 79.723	 + 79.723	(adults) + 35.169(children)$$
 $$ -22.637(babies) + 2.353(hotel Resort Hotel) + 33.779 (mealHB) - 17.205(mealSc)$$
@@ -302,24 +305,24 @@ our training and test sets, and find that on average, our predictions differ
 from the actual value by around $43. 
 
 ```{r}
-train_pred <- tibble(predicted = predict(model, hotel_train)) %>%
-                          bind_cols(hotel_train)
-train_pred %>%
-  rmse(truth = adr, estimate = predicted)
-test_pred <- tibble(predicted = predict(model, hotel_test)) %>%
-                          bind_cols(hotel_test)
-test_pred %>%
-  rmse(truth = adr, estimate = predicted)
+#train_pred <- tibble(predicted = predict(model, hotel_train)) %>%
+#                          bind_cols(hotel_train)
+#train_pred %>%
+# rmse(truth = adr, estimate = predicted)
+#test_pred <- tibble(predicted = predict(model, hotel_test)) %>%
+#                          bind_cols(hotel_test)
+#test_pred %>%
+#  rmse(truth = adr, estimate = predicted)
 ```
 
 ### Diagnostics 
 
 ```{r}
-autoplot(model, which = c(3, 4, 5))
+autoplot(selected_model, which = c(3, 4, 5))
 
 #Leverage 
 lev_threshold <- 2 * 2 / nrow(hotels) 
-hotel_aug <- augment(model) 
+hotel_aug <- augment(selected_model) 
 
 hotel_aug %>%
 filter(.hat > lev_threshold) %>% nrow()
@@ -347,7 +350,7 @@ hotel_aug <- hotel_aug %>%
 mutate(outlier = if_else(.std.resid < -3 | .std.resid > 3, "Yes", "No"))
 
 ggplot(hotel_aug, aes(x = adults, y = adr)) + geom_point(aes(color = outlier)) +
-geom_smooth(method = "lm", se = FALSE) + labs(title = "PLotting of Outliers",
+geom_smooth(method = "lm", se = FALSE) + labs(title = "Plotting of Outliers",
       y = "Average Daily Rate",
       x = "Adults") 
 ```
