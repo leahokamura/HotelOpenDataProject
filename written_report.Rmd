@@ -8,7 +8,7 @@ output:
     toc_depth: 1
     number_sections: true
 
-#bibliography: references.bib
+bibliography: references.bib
 link-citations: true
 ---
 
@@ -44,7 +44,7 @@ We are interested in analyzing U.S. hotel bookings, with the goal of providing i
 ### Data 
 
 The source of the dataset is [Tiny Tuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-11/readme.md).
-This data set was originally collected from an open hotel booking demand dataset from Antonio, Almeida and Nunes, 2019. The data collected from hotels all around the world ranges from bookings in 2015 to 2017. It is sourced from [this study](https://www.sciencedirect.com/science/article/pii/S2352340918315191#f0010). Due to the dataset being over 100,000 observations, we have limited the observations to be only hotels from the US. The general characteristics being measured in the data are the different aspects of booking and staying at a hotel. For example, out of the 32 variables, some of the ones we find great interest in are hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status. Therefore, each observation is one booking/stay at a specific hotel in America and all of its characteristics. Therefore, there can be multiple observations from the same hotel and even on the same time range. The full dataset dictionary can be found in the repository ReadMe. 
+This data set was originally collected from an open hotel booking demand dataset [@ANTONIO201941]. The data collected from hotels all around the world ranges from bookings in 2015 to 2017. It is sourced from [this study](https://www.sciencedirect.com/science/article/pii/S2352340918315191#f0010). Due to the dataset being over 100,000 observations, we have limited the observations to be only hotels from the US. The general characteristics being measured in the data are the different aspects of booking and staying at a hotel. For example, out of the 32 variables, some of the ones we find great interest in are hotel type, reserved room type, assigned room type, company, meal, number of adults/children/babies, the average daily rate or daily cost, and the reservation status. Therefore, each observation is one booking/stay at a specific hotel in America and all of its characteristics. Therefore, there can be multiple observations from the same hotel and even on the same time range. The full dataset dictionary can be found in the repository ReadMe. 
 
 ### Resesarch Question 
 
@@ -364,4 +364,6 @@ bookings than resort bookings.
 # References
 
 
-<div id="refs"></div>
+<div id="refs">
+
+</div>
