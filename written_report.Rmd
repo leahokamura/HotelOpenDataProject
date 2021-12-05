@@ -98,6 +98,7 @@ labs(title = "Distribution of Meal Plan According to Booking Details",
       x = "Type of Meal Plan") 
 ```
 #Appendix
+
 ```{r}
 hotels %>%
   group_by(meal) %>%
@@ -374,6 +375,11 @@ bookings than resort bookings.
 
 ### Interpretations and Conclusions 
 
+$$\hat{Average Daily Rate} = 79.723	 + 79.723	(adults) + 35.169(children)$$
+$$ -22.637(babies) + 2.353(hotel Resort Hotel) + 33.779 (mealHB) - 17.205(mealSc)$$
+$$+106.033(mealUndefined)-12.809(reservationstatusCheck-Out) - 2.662(reservationstatusNo-Show)$$
+It does not make sense to interpret the intercept because there will be no case where people are not included in one of the adults, children, or babies categories. The slope for adults means that for each additional number of adults, the average daily rate of hotel is expected to increase by 79.723 dollars. The slope for children means that for each additional number of children, the average daily rate of hotel is expected to increase by 35.169 dollars. The slope for babies means that for each additional number of babies, the average daily rate of hotel is expected to decrease by 22.637 dollars. The slope for hotelResortHotel means that if the hotel is resort hotel instead of city hotel, the average daily rate of hotel is expected to increase by 2.353 dollars. The slope for mealHB, mealSc, mealUndefined means that if selected meal is half board (breakfast and dinner), the average daily rate of hotel is expected to increase by 33.779 dollars, and if selected meal is undefined or SC, the average daily rate of hotel is expected to increase 
+If the reservation last status is 
 
 
 # References
@@ -382,3 +388,11 @@ bookings than resort bookings.
 <div id="refs">
 
 </div>
+
+
+# Appendix
+
+## Exploratory Data Analysis \label{appendix:eda}
+
+```{r}
+```
