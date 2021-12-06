@@ -57,10 +57,13 @@ To better understand the contributing factors to the daily rate of hotel rooms i
 2) Evaluate the statistical significance of each predictor, identifying the strongest contributing factors. 
 
 We find a model that is a reasonable predictor of daily hotel room rates in the U.S., 
-and find __, __, __, and _ to be the most important predictors. We find that 
-bookings with _ and _ were associated with the largest increase in average daily hotel 
-room rate, and bookings with _ and __ were associated with the largest decrease 
-in average daily rate. 
+and find that purchase of a meal plan, booking in August or October, and having previous
+bookings that were not cancelled were the most correlated with larger increases in daily hotel rate, 
+and that being a repeated guest, booking in a Resort hotel instead of a City hotel, 
+and booking in December were most correlated with decreases in daily hotel rate.
+We were also able to show that our model generalized to new
+data, which means that it could reasonably be used to predict hotel rates in the U.S., 
+with an expected error of about $33. 
 
 ## Data 
 
@@ -350,20 +353,24 @@ potentially be broken in limited circumstances, such as competing hotel holiday
 promotions.  
 
 It's important to recognize that our model has several limitations. First, we recognize
-that the travel industry (including hotel booking) is incredibly vulnerable to 
+that the travel industry (including hotel booking) is sensitive to 
 tragic circumstances or disasters, which are not accounted for in our model. For example, 
 we recognize that our model is not likely to characterize hotel bookings during COVID, given that our 
-data is limited to the years 2015 to 2017. 
+data is limited to the years 2015 to 2017 (before COVID was in the U.S.). 
 Additionally, we anticipate that the hotel room type (such as suite versus 
 individual room) would be an important predictor of hotel room price, but is not 
-included in our model. Our dataset included a variable for the room type, but it 
-was mapped to a anonymous letter system (A,B,C..) to protect industry knowledge. 
-We excluded this variable because it would be impossible to use in the real 
-world without knowing what mapping was applied. 
-In our exploratory analysis, we found that there were far more hotel bookings in 
+included in our model, as described in our methodologies section.
+Additionally, in our exploratory analysis we found that there were far more hotel bookings in 
 cities than in resorts. Given this skew, our model may better characterize city 
 bookings than resort bookings. 
 
+Our analysis shows that purchase of a meal plan, booking in August or October, and having previous
+bookings that were not cancelled were the
+most correlated with larger increases in daily hotel rate, and that being a repeated 
+guest, booking in a Resort hotel instead of a City hotel, and booking in December were most correlated with decreases in daily hotel rate. We were also able to show that our model generalized to new
+data,showing that the error rate on a training and test set are similar (around $33). This
+means that our model could reasonably be used to predict hotel rates in the U.S., 
+with the above limitations in mind. 
 
 
 # References
