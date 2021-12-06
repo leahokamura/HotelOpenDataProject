@@ -7,6 +7,8 @@ output:
     toc: true
     toc_depth: 1
     number_sections: true
+fig_width: 4 
+fig_height: 2 
 
 bibliography: references.bib
 link-citations: true
@@ -82,12 +84,12 @@ statistics.
 
 #Appendix
 
-```{r response-plot, echo = FALSE, message=FALSE}
+```{r response-plot, echo = FALSE, message=FALSE, fig.height = 3, fig.width = 5, fig.align = "center"}
 ggplot(data = hotels, aes(x = adr)) +
   geom_histogram(fill = 2) + 
   labs(x = "Price in US Dollars",
        y = "Frequency", 
-       title = "Distribution of Average Daily Rate (Cost) of Hotel Bookings",
+       title = "Average Daily Rate (Cost) of Hotel Bookings",
        subtitle = "Collected from Hotels in the U.S. from 2015-2017") 
 ```
 
@@ -106,7 +108,7 @@ The response variable, average daily rate, has a somewhat skewed right, bimodal 
 
 We were also interested in comparing the kind of hotel, resort or city. To explore this factor, we summarize the distributions of hotel prices by each hotel type. 
 
-```{r, echo = FALSE, message=FALSE}
+```{r, echo = FALSE, message=FALSE, fig.height = 3, fig.width = 5, fig.align = "center"}
 ggplot(data = hotels, aes(x = hotel, fill = hotel)) +
 geom_bar() +
 labs(title = "Distribution of Hotel Type",
@@ -238,7 +240,9 @@ From this analysis, we conclude that the conditions are met for performing linea
 
 ## Model Diagnostics
 
-Next, we evaluate model diagnostics to check for outliers and significant observations. 
+
+Next, we evaluate model diagnostics to check for outliers and signficant observations. 
+
 
 ```{r, echo = FALSE, message=FALSE}
 autoplot(selected_model, which = 1, ncol =1, colour = 'hotel')
