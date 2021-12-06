@@ -47,8 +47,8 @@ hotels <- read_csv("data/hotels_reduced.csv")
 
 ## Introduction 
 
-Hotels are a critical component of the travel sector in the U.S., with an estimated 5.3 million guest rooms, and supporting 1 in 25 American jobs on average prior to 2020 based on an [American Hotel and Lodging Association Report](https://www.ahla.com/sites/default/files/2021_state_of_the_industry_0.pdf). [A 2018 report](https://www.trekksoft.com/en/blog/65-travel-tourism-statistics-for-2019) showed that 
-approximately two thirds of Americans book their hotels directly through hotel websites, and [a 2019 analysis](https://globalnews.booking.com/bookingcom-reveals-key-findings-from-its-2019-sustainable-travel-report/) showed large discrepancies in consumer travel cost based on how consumers chose to prioritize booking lodging compared to activities.
+Hotels are a critical component of the travel sector in the U.S., with an estimated 5.3 million guest rooms, and supporting 1 in 25 American jobs on average prior to 2020 based on an [American Hotel and Lodging Association Report](https://www.ahla.com/sites/default/files/2021_state_of_the_industry_0.pdf) [@AHLA]. [A 2018 report](https://www.trekksoft.com/en/blog/65-travel-tourism-statistics-for-2019) showed that 
+approximately two thirds of Americans book their hotels directly through hotel websites, and [a 2019 analysis](https://globalnews.booking.com/bookingcom-reveals-key-findings-from-its-2019-sustainable-travel-report/) showed large discrepancies in consumer travel cost based on how consumers chose to prioritize booking lodging compared to activities [@kutschera][@booking].
 
 We are interested in analyzing U.S. hotel bookings, with the goal of providing insight to consumers on the factors that affect their average daily hotel cost. We believe there will be several significant points of relevance for understanding these relationships: understanding predictors of room cost could be used to help travelers to plan financially for future travel, or to potentially reduce cost. In this report, we are looking to use a variety of chosen models to understand the contributing factors to the average daily rate of a hotel room, as well as identify the strongest predictors.
 
@@ -80,6 +80,7 @@ We start our analysis by exploring the data. Since we are interested in predicti
 the average daily rate, we first plot its distribution and calculate its summary
 statistics. 
 
+#Appendix
 
 ```{r response-plot, echo = FALSE, message=FALSE}
 ggplot(data = hotels, aes(x = adr)) +
@@ -88,7 +89,6 @@ ggplot(data = hotels, aes(x = adr)) +
        y = "Frequency", 
        title = "Distribution of Average Daily Rate (Cost) of Hotel Bookings",
        subtitle = "Collected from Hotels in the U.S. from 2015-2017") 
-
 ```
 
 ```{r summary stats, echo = FALSE, message=FALSE}
@@ -103,6 +103,8 @@ kable(digits = 3)
 ```
 
 The response variable, average daily rate, has a somewhat skewed right, bimodal distribution. The average or mean average daily rate is \$122.992 and the median is $115. Because the distribution is skewed, the median is most likely the best indicator for the center. The standard deviation is \$51.617 and the data ranges from \$0 to \$328.33 with an interquartile range of \$61.99.
+
+We were also interested in comparing the kind of hotel, resort or city. To explore this factor, we summarize the distributions of hotel prices by each hotel type. 
 
 ```{r, echo = FALSE, message=FALSE}
 ggplot(data = hotels, aes(x = hotel, fill = hotel)) +
@@ -306,6 +308,8 @@ The model provides a number of useful predictors for determining how the average
 Another important factor when planning a trip or booking a hotel is when you would like to travel or stay. The model covers a variety of predictors that involve the timing of a booking. For example, when considering which month to travel in, there is a possibility that depending on the month you book your stay, the average daily rate may be more expensive or less expensive. For example, the model identifies that the arrival date of a stay in August has a coefficient of 77.880. This can be interpreted as if a guest decides to book a stay during the month of August, they would be expected to pay on average \$77.88 more per day, holding all else constant. Additionally, according to the model, if a guest stayed in a hotel with an arrival date in April, May, June, July, August, September, October, or November, they would be expected to pay on average a higher daily rate than staying in the month of January. This is proved by the fact that the p-value for each coefficient of these months is approximately 0, and the 95% confidence interval does not include 0 and has both thresholds being positive values. On the other hand, the months of February, March, and December all have fairly large p-values and have 0 fall in the 95% confidence interval. Therefore, we can say that these months are not statistically different from the month of January, meaning that there will not be a significant difference in the average daily rate whether a guest stays in January or February, March, or December.
 
 Not only is the month of stay important, but the day within a month may also be an important factor in the price of a hotel stay. The model gives a coefficient of -0.562 for the arrival date day of the month, but has a p-value of 0.208. Because this p-value is larger than the $\alpha$ = 0.05 level, we can say that the date of the month is not statistically significant. This is further proved by the 95% confidence interval (-1.435, 0.312), where 0 falls in the interval. Therefore, the arrival date in relation to the day of the month is not a useful predictor for the average daily rate of a hotel stay. 
+
+Besides, the model provided information that lead_time, the number of days in advance hotel rooms are booked, is also important predictor for determining the average daily rate. According to the model, the lead_time has a coefficient of -0.177. This can be interpreted as a guest is expected to pay 0.177 dollars less on average if the number of days in advance hotel rooms are booked increases by 1, holding all else constant. This means that the early people book hotel rooms before their arrival, it is more likely that they can save a good amount of money. 
 
 Additionally, when looking at the interaction between the day of the month and the month, we can see that maybe staying at a certain time within a certain month may have an effect in the cost. The months of March, July, September, and December all had p-values less than $\alpha$ = 0.05 level, so we can conclude that they are statistically significant. This means that the effect of Month of arrival date on the average daily rate is statistically different for July, September, and December. 
 
