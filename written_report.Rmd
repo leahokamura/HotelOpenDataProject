@@ -1,7 +1,7 @@
 ---
 title: "Predicting the Cost of Hotel Booking in the United States"
 author: "LAM-duh: Xuliang Deng, Leah Okamura, Megan Richards"
-date: "Nov 15th, 2021"
+date: "Dec 6th, 2021"
 output: 
   pdf_document: 
     toc: true
@@ -78,12 +78,12 @@ statistics.
 
 #Appendix
 ```{r response-plot}
-ggplot(data = hotels, aes(x = adr, fill = hotel)) +
-  geom_histogram() + 
+ggplot(data = hotels, aes(x = adr)) +
+  geom_histogram(fill = 2) + 
   labs(x = "Price in US Dollars",
        y = "Frequency", 
        title = "Distribution of Average Daily Rate (Cost) of Hotel Bookings",
-       subtitle = "Collected from Hotels in the U.S. from 2015-2017")
+       subtitle = "Collected from Hotels in the U.S. from 2015-2017") 
 
 ```
 
@@ -114,11 +114,13 @@ This table provides insight on the type of people who were booking hotels in the
 
 #Appendix
 ```{r}
-ggplot(data = hotels, aes(x = meal, fill = hotel)) +
-geom_bar() +
+
+ggplot(data = hotels, aes(x = meal, fill = meal)) +
+geom_bar() + 
 labs(title = "Distribution of Meal Plan According to Booking Details",
       y = "Frequency",
       x = "Type of Meal Plan") 
+                          
 ```
 #Appendix
 
@@ -133,7 +135,7 @@ We can see that majority of customer bookings chose the Bed and Breakfast plan (
 
 #Appendix
 ```{r}
-ggplot(data = hotels, aes(x = reservation_status, fill = hotel)) +
+ggplot(data = hotels, aes(x = reservation_status, fill = reservation_status)) +
 geom_bar() +
 labs(title = "Distribution of Reservation Status",
   x = "Type of Status",
@@ -150,37 +152,40 @@ hotels %>%
 We can see that resort hotel is on average more expensive, and that most customers booked at city hotels. We are interested in whether the classification of City Hotel and Resort Hotel will proportionately have similar relationships with the other variables.
 
 ```{r}
-ggplot(data = hotels, aes(x = lead_time, y = adr, color = hotel)) +
-geom_point() +
-labs(title = "Relationship between how early people book hotel and price in the US dollars",
-  x = "Subtraction of entering date from arrival date",
-  y = "Price in the US Dollars") 
+ggplot(data = hotels, aes(x = lead_time, y = adr)) +
+geom_point(color="blue") +
+labs(title = "Relationship Between How Early People Book Hotel Rooms
+and Average Daily Rate",
+  x = "The Number of Days in Advance Hotel Rooms are Booked",
+  y = "Average Daily Rate") 
 ```
 We can see that the more last minute visitors book a hotel, the more likely it is that the price in the US dollars varies. Besides, we can also see that the highest price in a hotel decreases as the difference between entering data and arrival date increases. This could suggest that the earlier you book a hotel, the price is more likely to be cheap. 
 
 ```{r}
-ggplot(data = hotels, aes(x = adr, y = arrival_date_day_of_month, color=hotel)) +
-geom_point() +
-labs(title = "Relationship between day in the month when hotels are booked and price in the US dollars",
-  x = "Day in the month",
-  y = "Price in US Dollars") 
+ggplot(data = hotels, aes(x = adr, y = arrival_date_day_of_month)) +
+geom_point(color="blue") +
+labs(title = "Relationship Between Day in the Month When Hotel Rooms Are Booked
+and Average Daily Rate",
+  x = "Day in the Month",
+  y = "Average Daily Rate") 
 ```
 We cannot see any significant relationship between day in the month and the hotel price from this figure. However, we can see that summer is the busiest season for hotels and the price varies evenly. At the beginning of the year and the end of the year, hotels are not really booked as often. 
 
 ```{r}
-ggplot(data = hotels, aes(x = arrival_date_week_number, y = adr, color=hotel)) +
-geom_point() +
-labs(title = "Relationship between week in the year when hotels are booked and price in the US dollars",
-  x = "Week in the year",
-  y = "Price in US Dollars") 
+ggplot(data = hotels, aes(x = arrival_date_week_number, y = adr)) +
+geom_point(color = "blue") +
+labs(title = "Relationship Between Week in the Year When Hotel Rooms are Booked 
+and Average Daily Rate",
+  x = "Week in the Year",
+  y = "Average Daily Rate") 
 ```
 From this figure, we can also see that at the beginning and end of the year hotels are not as busy as during the summer. Besides, we can also observe that the price of hotel tends to become higher during summer time compared to the rest of the year. 
 
 We are particularly interested in using the hotel type (Resort versus City Hotel) as a predictor of average daily rate. As an initial analysis, we perform a t-test on the the average daily rates of bookings for resort versus city hotels. This t-test assesses if there is a significant difference between the two distributions, which would indicate that hotel type is likely to be a useful predictor of average daily rate. In this analysis, we find that our t-test produces a p-value of 0.002305%. Because this p-value is very low, we conclude that there is a statistically significant relationship between the average daily hotel rates of resort hotels and city hotels in our dataset, which provides evidence that hotel type is a useful predictor of average daily hotel rates. 
 
 ```{r}
-ggplot(data = hotels, aes(x = hotel)) +
-geom_bar(fill = 2) +
+ggplot(data = hotels, aes(x = hotel, fill = hotel)) +
+geom_bar() +
 labs(title = "Distribution of Hotel Type",
   x = "Type of Hotel",
   y = "Frequency")
