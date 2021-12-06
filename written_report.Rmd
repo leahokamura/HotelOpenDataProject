@@ -56,7 +56,11 @@ To better understand the contributing factors to the daily rate of hotel rooms i
 1) Evaluate the efficacy of this model to predict daily hotel room rates
 2) Evaluate the statistical significance of each predictor, identifying the strongest contributing factors. 
 
-We find that < INSERT CONCLUSION > 
+We find a model that is a reasonable predictor of daily hotel room rates in the U.S., 
+and find __, __, __, and _ to be the most important predictors. We find that 
+bookings with _ and _ were associated with the largest increase in average daily hotel 
+room rate, and bookings with _ and __ were associated with the largest decrease 
+in average daily rate. 
 
 ## Data 
 
