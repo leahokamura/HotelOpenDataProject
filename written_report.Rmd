@@ -7,6 +7,8 @@ output:
     toc: true
     toc_depth: 1
     number_sections: true
+fig_width: 4 
+fig_height: 2 
 
 bibliography: references.bib
 link-citations: true
@@ -80,12 +82,12 @@ the average daily rate, we first plot its distribution and calculate its summary
 statistics. 
 
 
-```{r response-plot, echo = FALSE, message=FALSE}
+```{r response-plot, echo = FALSE, message=FALSE, fig.height = 3, fig.width = 5, fig.align = "center"}
 ggplot(data = hotels, aes(x = adr)) +
   geom_histogram(fill = 2) + 
   labs(x = "Price in US Dollars",
        y = "Frequency", 
-       title = "Distribution of Average Daily Rate (Cost) of Hotel Bookings",
+       title = "Average Daily Rate (Cost) of Hotel Bookings",
        subtitle = "Collected from Hotels in the U.S. from 2015-2017") 
 
 ```
@@ -103,7 +105,7 @@ kable(digits = 3)
 
 The response variable, adr, has a somewhat skewed right, bimodal distribution. The average or mean average daily rate is \$122.992 and the median is $115. Because the distribution is skewed, the median is most likely the best indicator for the center. The standard deviation is \$51.617 and the data ranges from \$0 to \$328.33 with an interquartile range of \$61.99.
 
-```{r, echo = FALSE, message=FALSE}
+```{r, echo = FALSE, message=FALSE, fig.height = 3, fig.width = 5, fig.align = "center"}
 ggplot(data = hotels, aes(x = hotel, fill = hotel)) +
 geom_bar() +
 labs(title = "Distribution of Hotel Type",
