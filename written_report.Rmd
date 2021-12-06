@@ -237,6 +237,8 @@ From this analysis, we conclude that the conditions are met for performing linea
 
 ## Model Diagnostics
 
+Next, we evaluate model diagnostics to check for outliers and signficant observations. 
+
 ```{r, echo = FALSE, message=FALSE}
 autoplot(selected_model, which = 1, ncol =1, colour = 'hotel')
 ```
