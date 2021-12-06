@@ -13,7 +13,7 @@ link-citations: true
 ---
 
 
-```{r ggplot2-options, include = FALSE}
+```{r ggplot2-options, include = FALSE, echo = FALSE, message=FALSE}
 # set consistent theme
 #theme_set(ggplot2::theme_minimal())
 color_palette <- list(gray = "#999999", 
@@ -29,7 +29,7 @@ color_palette <- list(gray = "#999999",
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r load-packages,include=FALSE}
+```{r load-packages,include=FALSE, echo = FALSE,message=FALSE}
 library(tidyverse)
 library(patchwork)
 library(knitr)
@@ -39,7 +39,7 @@ library(ggplot2)
 #install.packages("Rpdb")
 ``` 
 
-```{r load-data,include=FALSE}
+```{r load-data,include=FALSE, echo = FALSE, message=FALSE}
 hotels <- read_csv("data/hotels_reduced.csv")
 ```
 
@@ -79,8 +79,8 @@ We start our analysis by exploring the data. Since we are interested in predicti
 the average daily rate, we first plot its distribution and calculate its summary
 statistics. 
 
-#Appendix
-```{r response-plot}
+
+```{r response-plot, echo = FALSE, message=FALSE}
 ggplot(data = hotels, aes(x = adr)) +
   geom_histogram(fill = 2) + 
   labs(x = "Price in US Dollars",
@@ -90,7 +90,7 @@ ggplot(data = hotels, aes(x = adr)) +
 
 ```
 
-```{r summary stats}
+```{r summary stats, echo = FALSE, message=FALSE}
 hotels %>%
     summarise(mean = mean(adr), 
               median = median(adr), 
@@ -103,90 +103,7 @@ kable(digits = 3)
 
 The response variable, adr, has a somewhat skewed right, bimodal distribution. The average or mean average daily rate is \$122.992 and the median is $115. Because the distribution is skewed, the median is most likely the best indicator for the center. The standard deviation is \$51.617 and the data ranges from \$0 to \$328.33 with an interquartile range of \$61.99.
 
-#Appendix
-```{r}
-adults <- sum(hotels$adults)
-children <- sum(hotels$children)
-babies <- sum(hotels$babies)
-
-tb <- table(adults, children, babies)
-kable(tb)
-```
-
-This table provides insight on the type of people who were booking hotels in the U.S. during this time period. A large majority of customers were only adults with a total of 3,950 hotel bookings. The next largest customer group were people or adults with their children at a total of 362 bookings. Lastly, those who booked a stay with a baby was considerably less, with only 6 bookings.
-
-#Appendix
-```{r}
-
-ggplot(data = hotels, aes(x = meal, fill = meal)) +
-geom_bar() + 
-labs(title = "Distribution of Meal Plan According to Booking Details",
-      y = "Frequency",
-      x = "Type of Meal Plan") 
-                          
-```
-#Appendix
-
-```{r}
-hotels %>%
-  group_by(meal) %>%
-  summarise(n = n(), mean = mean(adr), sd = sd(adr)) %>%
-  kable(digits = 3)
-```
-
-We can see that majority of customer bookings chose the Bed and Breakfast plan (BB), rather than Half Board plan or Full Board (HB and SC). While this does reflect the choice of those booking the hotel, this visualization and dataset can also be influenced by what type of meal plan each hotel is offering. 
-
-#Appendix
-```{r}
-ggplot(data = hotels, aes(x = reservation_status, fill = reservation_status)) +
-geom_bar() +
-labs(title = "Distribution of Reservation Status",
-  x = "Type of Status",
-  y = "Frequency") 
-```
-A vast majority of the reservation statuses in this dataset resulted in a check-out, meaning that the customer arrived and stayed for the duration of the stay. It also important to note that a substantial proportion of hotel bookings were canceled, and if possible we would like to investigate what relationship might exist here.
-
-```{r}
-hotels %>%
-  group_by(hotel) %>%
-  summarise(n = n(), mean = mean(adr), sd = sd(adr)) %>%
-  kable(digits = 3)
-```
-We can see that resort hotel is on average more expensive, and that most customers booked at city hotels. We are interested in whether the classification of City Hotel and Resort Hotel will proportionately have similar relationships with the other variables.
-
-```{r}
-ggplot(data = hotels, aes(x = lead_time, y = adr)) +
-geom_point(color="blue") +
-labs(title = "Relationship Between How Early People Book Hotel Rooms
-and Average Daily Rate",
-  x = "The Number of Days in Advance Hotel Rooms are Booked",
-  y = "Average Daily Rate") 
-```
-We can see that the more last minute visitors book a hotel, the more likely it is that the price in the US dollars varies. Besides, we can also see that the highest price in a hotel decreases as the difference between entering data and arrival date increases. This could suggest that the earlier you book a hotel, the price is more likely to be cheap. 
-
-```{r}
-ggplot(data = hotels, aes(x = adr, y = arrival_date_day_of_month)) +
-geom_point(color="blue") +
-labs(title = "Relationship Between Day in the Month When Hotel Rooms Are Booked
-and Average Daily Rate",
-  x = "Day in the Month",
-  y = "Average Daily Rate") 
-```
-We cannot see any significant relationship between day in the month and the hotel price from this figure. However, we can see that summer is the busiest season for hotels and the price varies evenly. At the beginning of the year and the end of the year, hotels are not really booked as often. 
-
-```{r}
-ggplot(data = hotels, aes(x = arrival_date_week_number, y = adr)) +
-geom_point(color = "blue") +
-labs(title = "Relationship Between Week in the Year When Hotel Rooms are Booked 
-and Average Daily Rate",
-  x = "Week in the Year",
-  y = "Average Daily Rate") 
-```
-From this figure, we can also see that at the beginning and end of the year hotels are not as busy as during the summer. Besides, we can also observe that the price of hotel tends to become higher during summer time compared to the rest of the year. 
-
-We are particularly interested in using the hotel type (Resort versus City Hotel) as a predictor of average daily rate. As an initial analysis, we perform a t-test on the the average daily rates of bookings for resort versus city hotels. This t-test assesses if there is a significant difference between the two distributions, which would indicate that hotel type is likely to be a useful predictor of average daily rate. In this analysis, we find that our t-test produces a p-value of 0.002305%. Because this p-value is very low, we conclude that there is a statistically significant relationship between the average daily hotel rates of resort hotels and city hotels in our dataset, which provides evidence that hotel type is a useful predictor of average daily hotel rates. 
-
-```{r}
+```{r, echo = FALSE, message=FALSE}
 ggplot(data = hotels, aes(x = hotel, fill = hotel)) +
 geom_bar() +
 labs(title = "Distribution of Hotel Type",
@@ -194,7 +111,7 @@ labs(title = "Distribution of Hotel Type",
   y = "Frequency")
 ```
 
-```{r resort-t-test}
+```{r resort-t-test, echo = FALSE, message=FALSE}
 resort_adr <- hotels[hotels$hotel == "Resort Hotel",]$adr
 city_adr <- hotels[hotels$hotel == "City Hotel",]$adr
 
@@ -202,7 +119,17 @@ hotel_type_p_value <- t.test(resort_adr, city_adr)$p.value
 print(hotel_type_p_value)
 ```
 
-```{r adult-t-test}
+We are particularly interested in using the hotel type (Resort versus City Hotel) as a predictor of average daily rate. As an initial analysis, we perform a t-test on the the average daily rates of bookings for resort versus city hotels. This t-test assesses if there is a significant difference between the two distributions, which would indicate that hotel type is likely to be a useful predictor of average daily rate. In this analysis, we find that our t-test produces a p-value of 0.002305%. Because this p-value is very low, we conclude that there is a statistically significant relationship between the average daily hotel rates of resort hotels and city hotels in our dataset, which provides evidence that hotel type is a useful predictor of average daily hotel rates. 
+
+```{r, echo = FALSE, message=FALSE}
+hotels %>%
+  group_by(hotel) %>%
+  summarise(n = n(), mean = mean(adr), sd = sd(adr)) %>%
+  kable(digits = 3)
+```
+We can see that resort hotel is on average more expensive, and that most customers booked at city hotels. We are interested in whether the classification of City Hotel and Resort Hotel will proportionately have similar relationships with the other variables.
+
+```{r adult-t-test,echo = FALSE, message=FALSE}
 hotels <-hotels%>%
   mutate(children_present = case_when
          (hotels$adults > 0 & hotels$children == 0 & hotels$babies == 0 ~ 0,
@@ -224,7 +151,7 @@ We are also particularly interested in using the presence of kids (children or b
 
 It is important to note that there are a few variables in the dataset that do not provide insight to our research question and as a result we will remove from the dataset. First is the category `hotels$country`, due to the fact that every hotel in this subset of the data is located in the U.S., this is a redundant variable. Next, the variables `hotels$reserved_room_type`, `hotels$assigned_room_type`, `hotels$agent`, `hotels$company` are categorical variables that have codes assigned to their values. However, due to the confidentiality of the customers, the classification of these codes have not been identified by those who collected the data. Therefore, we will be removing these variables from the dataset. In addition to that, we removed `hotels$reservation_status_date` and `hotels$arrival_date_week_number` as we already had variables that tracked day, month, and year. The variables `hotels$previous_cancellations` and `hotels$reservation_status` were also removed as they did not provide relevance in predicting the average daily rate.In addition to removing variables, certain variables such as `hotels$month` as well as `hotels$meal` had to be refactored and cleaned in order to function properly in the linear regression model. 
 
-```{r}
+```{r, echo = FALSE, message=FALSE}
 
 if (hotels$arrival_date_week_number >=36 & hotels$arrival_date_week_number<=39)
 {hotels$arrival_date_month = "September"}
@@ -250,18 +177,22 @@ hotels <- hotels%>%
            "May", "June", "July", "August",
            "September", "October", "November",
            "December")), 
-          arrival_date_year = factor(arrival_date_year, 
+        arrival_date_year = factor(arrival_date_year, 
                                      levels = c(2015, 2016, 2017)),
           meal = case_when(meal == "SC" | meal == "Undefined" ~ "None",
                            meal == "BB" ~ "BB",
                            meal == "HB" ~ "HB"),
           meal = factor(meal, levels = c("None", "BB", "HB")))
+
+colnames(hotels)[colnames(hotels) == 'arrival_date_year'] <- 'year'
+colnames(hotels)[colnames(hotels) == 'arrival_date_month'] <- 'month'
+colnames(hotels)[colnames(hotels) == 'arrival_date_day_of_month'] <- 'day_of_month'
 ```
 
 We will now fit a model using all of the variables from our cleaned dataset. In particular, we are curious in how 
 hotel (Resort Hotel or City Hotel), stays_in_weekend_nights, stays_in_week_nights, the type of meal plan, as well as the time of the reservatuon as predictor variables. As we explore more of the relationships in our dataset, we will be performing selection criterias to find the best model for prediciting the average daily rate of a hotel reservation. We plan to use multiple linear regression with a variety of combinations of interested predictor variables and their interaction. 
 
-```{r}
+```{r, echo = FALSE, message=FALSE}
 set.seed(12121)
 hotel_split <- initial_split(hotels, prop = 0.8) #80% in the training set
 hotel_train <- training(hotel_split) 
@@ -273,7 +204,7 @@ rownames(hotel_test) <- NULL
 
 ## Model Selection
 
-```{r}
+```{r, echo = FALSE, message=FALSE}
 full_model <- lm(adr ~ ., data = hotels)
 tidy(full_model) %>%
   kable(digits = 3)
@@ -282,12 +213,12 @@ tidy(full_model) %>%
 
 The model above is the full model. With such a high number of predictor variables, we believed it would be best to use a backwards model with BIC as our selection criteria. With this, we are able to narrow down our predictor variables to the most significant ones that can be used to draw concrete conclusions as well as predict daily prices for different types of reservations. Additionally, we were specifically interested in how the month of the reservation and the day in the month had an affect on each other. Therefore, we added this interaction term into our model. The final model is displayed in the Results section.
 
-```{r results = "hide"}
+```{r results = "hide", echo = FALSE, message=FALSE}
 selected_model <- stats::step(full_model, scope=formula(full_model), direction="backward", k = log(nrow(hotels)))
 ```
 ## Model Conditions 
 
-```{r }
+```{r, echo = FALSE ,message=FALSE}
 # Residual + QQ Plots
 autoplot(selected_model, which = c(1,2))
 ```
@@ -307,31 +238,34 @@ From this analysis, we conclude that the conditions are met for performing linea
 
 ## Model Diagnostics
 
-```{r}
-
+```{r, echo = FALSE, message=FALSE}
 autoplot(selected_model, which = 1, ncol =1, colour = 'hotel')
+```
+```{r, echo = FALSE, message=FALSE}
 autoplot(selected_model, which = 3, ncol =1, colour = 'hotel')
+```
+```{r, echo = FALSE, message=FALSE}
 autoplot(selected_model, which = 4, ncol =1, colour = 'hotel')
 ```
 
-```{r}
+```{r, echo = FALSE, message=FALSE, }
 #Leverage 
 
 lev_threshold <- 2 * (16+1) / nrow(hotels) 
 hotel_aug <- augment(selected_model) 
 
-hotel_aug %>%
+hotel_aug <- hotel_aug%>%
 filter(.hat > lev_threshold)# %>% 
 #nrow()
 
 
 # High Magnitude Residual 
-hotel_aug %>%
+hotel_aug <- hotel_aug%>%
 filter(.std.resid < -3 | .std.resid > 3) #%>%
 #nrow()
 
 # Influential Point 
-hotel_aug %>%
+hotel_aug <- hotel_aug%>%
 filter(.cooksd > 0.5) #%>% 
 #nrow()
 ```
@@ -352,13 +286,13 @@ After calculating the model diagnostics, we have found that on observation can b
 
 ## Model 
 
-```{r}
+```{r, echo = FALSE, message=FALSE}
 #tidy(selected_model) %>%
  # kable()
 ```
 
-```{r}
-model_interact <- lm(adr ~ hotel + is_canceled + lead_time + arrival_date_year + arrival_date_month + arrival_date_day_of_month + stays_in_week_nights + adults + children + meal + distribution_channel + is_repeated_guest + previous_bookings_not_canceled + days_in_waiting_list + total_of_special_requests + arrival_date_month*arrival_date_day_of_month, data = hotels)
+```{r, echo = FALSE, message=FALSE}
+model_interact <- lm(adr ~ hotel + is_canceled + lead_time + year + month + day_of_month + stays_in_week_nights + adults + children + meal + distribution_channel + is_repeated_guest + previous_bookings_not_canceled + days_in_waiting_list + total_of_special_requests + month*day_of_month, data = hotels)
 
 tidy(model_interact, conf.int =.95) %>%
   kable(digits = 3)
@@ -384,9 +318,9 @@ Lastly, we will discuss how a meal plan can possibly change the average daily pr
 
 In addition to discussing how the different predictors affect the average daily rate, one can also use the model to predict how much their hotel stay may cost in relation to these factors. For example, we can predict the average daily rate for a guest who had a reservation at a Resort Hotel that was not canceled, had 90 days elapsed between the entering date of the booking into the PMS and their arrival date, had an arrival date of February 26, 2016, stayed for 3 weekend nights, consisted of 2 adults and 3 children, got a Half Board meal plan, booked directly from the hotel, is not a repeated guest, has not had previous bookings canceled, had 0 days in the wait list and had a total of 4 special requests. 
 
-```{r}
-x0 <- tibble(hotel = "Resort Hotel", is_canceled = 0, lead_time = 90, arrival_date_year = "2016", arrival_date_month = "February",
-             arrival_date_day_of_month = 26, stays_in_week_nights = 3, adults = 2, children =3, meal = "HB", distribution_channel = "Direct",
+```{r, echo = FALSE, message=FALSE}
+x0 <- tibble(hotel = "Resort Hotel", is_canceled = 0, lead_time = 90, year = "2016", month = "February",
+             day_of_month = 26, stays_in_week_nights = 3, adults = 2, children =3, meal = "HB", distribution_channel = "Direct",
              is_repeated_guest = 0, previous_bookings_not_canceled = 0, days_in_waiting_list = 0, total_of_special_requests = 4)
 
 selected_model %>% 
@@ -396,7 +330,7 @@ selected_model %>%
 
 Based on the above table, we are 95% confident that the average daily rate for this guest will fall somewhere between \$196.49 and \$224.31. Therefore, we can predict that this guest's reservation will have an average daily rate of about $210.40. This model can be applied to a variety of hypothetical guests and reservations to predict how much one's hotel stay would cost. 
 
-```{r}
+```{r, echo = FALSE, message=FALSE}
 train_pred <- tibble(predicted = predict(selected_model, hotel_train)) %>%
                           bind_cols(hotel_train)
 train_pred %>%
@@ -450,5 +384,34 @@ with the above limitations in mind.
 
 ## Exploratory Data Analysis \label{appendix:eda}
 
-```{r}
+```{r, echo = FALSE, message=FALSE}
+
+ggplot(data = hotels, aes(x = meal, fill = meal)) +
+geom_bar() + 
+labs(title = "Distribution of Meal Plan According to Booking Details",
+      y = "Frequency",
+      x = "Type of Meal Plan") 
+                          
 ```
+
+
+```{r, echo = FALSE, message=FALSE}
+hotels %>%
+  group_by(meal) %>%
+  summarise(n = n(), mean = mean(adr), sd = sd(adr)) %>%
+  kable(digits = 3)
+```
+
+We can see that majority of customer bookings chose the Bed and Breakfast plan (BB), rather than Half Board plan or Full Board (HB and SC). While this does reflect the choice of those booking the hotel, this visualization and dataset can also be influenced by what type of meal plan each hotel is offering. 
+
+```{r, echo = FALSE, message=FALSE}
+ggplot(data = hotels, aes(x = lead_time, y = adr)) +
+geom_point(color="blue") +
+labs(title = "Relationship Between How Early People Book Hotel Rooms
+and Average Daily Rate",
+  x = "The Number of Days in Advance Hotel Rooms are Booked",
+  y = "Average Daily Rate") 
+```
+We can see that the more last minute visitors book a hotel, the more likely it is that the price in the US dollars varies. Besides, we can also see that the highest price in a hotel decreases as the difference between entering data and arrival date increases. This could suggest that the earlier you book a hotel, the price is more likely to be cheap. 
+
+
