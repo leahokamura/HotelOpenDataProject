@@ -433,7 +433,8 @@ Our analysis shows that purchase of a meal plan, booking in August or October, a
 bookings that were not cancelled were the
 most correlated with larger increases in daily hotel rate, and that being a repeated 
 guest, booking in a Resort hotel instead of a City hotel, and booking in December were most correlated with decreases in daily hotel rate. We were also able to show that our model generalized to new
-data, which means that it could reasonably be used to predict hotel rates in the U.S., 
+data,showing that the error rate on a training and test set are similar (around $33). This
+means that our model could reasonably be used to predict hotel rates in the U.S., 
 with the above limitations in mind. 
 
 
