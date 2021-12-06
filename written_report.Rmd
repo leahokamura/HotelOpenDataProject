@@ -69,19 +69,16 @@ with an expected error of about $33.
 
 ## Data 
 
-Our data set is hosted on [Tiny Tuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-11/readme.md), was originally collected through an global open hotel booking demand dataset [@ANTONIO201941], and was originally analyzed in a [2019 study](https://www.sciencedirect.com/science/article/pii/S2352340918315191#f0010). Due to the dataset being over 100,000 observations, we have limited the observations to be only hotels from the US. 
+Our data set is hosted on [Tiny Tuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-11/readme.md), was originally collected through an global open hotel booking demand survey [@ANTONIO201941], and was originally collected through a global open hotel booking demand survey in [2019](https://www.sciencedirect.com/science/article/pii/S2352340918315191#f0010). Due to the dataset being over 100,000 observations, we have limited the observations to be only hotels from the US. 
 
 The dataset contains characteristics of hotel bookings and hotel stays. Each observation represents one booking/stay at a specific hotel in America, containing information about the hotel itself, the booking details, and the 
-occupants. The full data set dictionary can be found in the repository ReadMe. For this analysis, we evaluate
-how variables affect the average daily rate or daily cost. Our methodologies section includes information on predictor selection. 
+occupants. The full data set dictionary can be found in the repository ReadMe, and our methodologies section includes information on predictor selection. 
 
 ## Exploratory Data Analysis 
 
 We start our analysis by exploring the data. Since we are interested in predicting 
 the average daily rate, we first plot its distribution and calculate its summary
 statistics. 
-
-#Appendix
 
 ```{r response-plot, echo = FALSE, message=FALSE, fig.height = 3, fig.width = 5, fig.align = "center"}
 ggplot(data = hotels, aes(x = adr)) +
@@ -115,12 +112,15 @@ labs(title = "Distribution of Hotel Type",
   y = "Frequency")
 ```
 
+$H_0:$There is no difference in the distributions of price between city and resort hotels.
+
+$H_A:$ There is a difference in the distributions of price between city and resort hotels.
+
 ```{r resort-t-test, echo = FALSE, message=FALSE}
 resort_adr <- hotels[hotels$hotel == "Resort Hotel",]$adr
 city_adr <- hotels[hotels$hotel == "City Hotel",]$adr
 
 hotel_type_p_value <- t.test(resort_adr, city_adr)$p.value
-print(hotel_type_p_value)
 ```
 
 We are particularly interested in using the hotel type (Resort versus City Hotel) as a predictor of average daily rate. As an initial analysis, we perform a t-test on the average daily rates of bookings for resort versus city hotels. This t-test assesses if there is a significant difference between the two distributions, which would indicate that hotel type is likely to be a useful predictor of average daily rate. In this analysis, we find that our t-test produces a p-value of approximately 0. Because this p-value is very low, we conclude that there is a statistically significant relationship between the average daily hotel rates of resort hotels and city hotels in our dataset, which provides evidence that hotel type is a useful predictor of average daily hotel rates. 
@@ -132,6 +132,10 @@ hotels %>%
   kable(digits = 3)
 ```
 We can see that resort hotel is on average more expensive, and that most customers booked at city hotels. We are interested in whether the classification of City Hotel and Resort Hotel will proportionately have similar relationships with the other variables.
+
+$H_0:$There is no difference in the distributions of price between only adult reservations and adults with children/babies reservations.
+
+$H_A:$ There is no difference in the distributions of price between only adult reservations and adults with children/babies reservations.
 
 ```{r adult-t-test,echo = FALSE, message=FALSE}
 hotels <-hotels%>%
@@ -145,8 +149,9 @@ adult_adr <- hotels[hotels$children_present == 0,]$adr
 kids_adr <- hotels[hotels$children_present == 1,]$adr
 
 resident_type_p_value <- t.test(adult_adr, kids_adr)$p.value
-print(resident_type_p_value)
+
 ```
+
 We are also particularly interested in using the presence of kids (children or babies) as a predictor of average daily rate. As an initial analysis, we perform a t-test on the the average daily rates of bookings for groups with only adults, versus groups with children or babies. This t-test assesses if there is a significant difference between the two distributions, which would indicate that the presence of kids is likely to be a useful predictor of average daily rate. In this analysis, we find that our t-test produces a p-value of approximately 0. Because this p-value is very low, we conclude that there is a statistically significant relationship between the average daily hotel rates of groups with children or babies and groups with only adults in our dataset, which provides evidence that the presence of kids (children or babies) is a useful predictor of average daily hotel rates. 
 
 To view more analysis on other predictor variables, you can see Section \ref{appendix:eda}.
@@ -155,9 +160,9 @@ To view more analysis on other predictor variables, you can see Section \ref{app
 
 ## Data Processing
 
-It is important to note that there are a few variables in the dataset that do not provide insight to our research question and as a result we will remove from the dataset. First is the category `hotels$country`, due to the fact that every hotel in this subset of the data is located in the U.S., this is a redundant variable. Next, the variables `hotels$reserved_room_type`, `hotels$assigned_room_type`, `hotels$agent`, `hotels$company` are categorical variables that have codes assigned to their values. However, due to the confidentiality of the customers, the classification of these codes have not been identified by those who collected the data. Therefore, we will be removing these variables from the dataset. In addition to that, we removed `hotels$reservation_status_date` and `hotels$arrival_date_week_number` as we already had variables that tracked day, month, and year. The variables `hotels$previous_cancellations` and `hotels$reservation_status` were also removed as they did not provide relevance in predicting the average daily rate.In addition to removing variables, certain variables such as `hotels$month` as well as `hotels$meal` had to be refactored and cleaned in order to function properly in the linear regression model. 
+It is important to note that there are a few variables in the dataset that do not provide insight to our research question and as a result we will remove from the dataset. First is the category country, due to the fact that every hotel in this subset of the data is located in the U.S., this is a redundant variable. Next, the variables for the reserved room type, the assigned room type, the agent, and the company are categorical variables that have codes assigned to their values. However, due to the confidentiality of the customers, the classification of these codes have not been identified by those who collected the data. Therefore, we will be removing these variables from the dataset. In addition to that, we removed reservation status date and week number of the arrival date as we already had variables that tracked day, month, and year. The variables for the number of previous cancellations and the reservation status of the booking were also removed as they did not provide relevance in predicting the average daily rate.In addition to removing variables, certain variables such as month as well as meal had to be refactored and cleaned in order to function properly in the linear regression model. 
 
-```{r, echo = FALSE, message=FALSE}
+```{r, echo = FALSE, message=FALSE, warning = FALSE}
 
 if (hotels$arrival_date_week_number >=36 & hotels$arrival_date_week_number<=39)
 {hotels$arrival_date_month = "September"}
@@ -221,7 +226,7 @@ selected_model <- stats::step(full_model, scope=formula(full_model), direction="
 ```
 ## Model Conditions 
 
-```{r, echo = FALSE ,message=FALSE}
+```{r, echo = FALSE ,message=FALSE, fig.height = 3}
 # Residual + QQ Plots
 autoplot(selected_model, which = c(1,2))
 ```
@@ -245,17 +250,17 @@ From this analysis, we conclude that the conditions are met for performing linea
 Next, we evaluate model diagnostics to check for outliers and signficant observations. 
 
 
-```{r, echo = FALSE, message=FALSE}
+```{r, echo = FALSE, message=FALSE, fig.height = 3}
 autoplot(selected_model, which = 1, ncol =1, colour = 'hotel')
 ```
-```{r, echo = FALSE, message=FALSE}
+```{r, echo = FALSE, message=FALSE,fig.height = 3}
 autoplot(selected_model, which = 3, ncol =1, colour = 'hotel')
 ```
-```{r, echo = FALSE, message=FALSE}
+```{r, echo = FALSE, message=FALSE, fig.height = 3}
 autoplot(selected_model, which = 4, ncol =1, colour = 'hotel')
 ```
 
-```{r, echo = FALSE, message=FALSE, }
+```{r, echo = FALSE, message=FALSE, fig.height = 3}
 #Leverage 
 
 lev_threshold <- 2 * (16+1) / nrow(hotels) 
@@ -341,11 +346,13 @@ selected_model %>%
 Based on the above table, we are 95% confident that the average daily rate for this guest will fall somewhere between \$196.49 and \$224.31. Therefore, we can predict that this guest's reservation will have an average daily rate of about $210.40. This model can be applied to a variety of new bookings and reservations to predict how much one's hotel stay would cost. 
 
 ```{r, echo = FALSE, message=FALSE}
-train_pred <- tibble(predicted = predict(selected_model, hotel_train)) %>%
+model_train <- lm(adr ~ hotel + is_canceled + lead_time + year + month + day_of_month + stays_in_week_nights + adults + children + meal + distribution_channel + is_repeated_guest + previous_bookings_not_canceled + days_in_waiting_list + total_of_special_requests + month*day_of_month, data = hotel_train)
+
+train_pred <- tibble(predicted = predict(model_train, hotel_train)) %>%
                           bind_cols(hotel_train)
 train_pred <- train_pred%>%
  rmse(truth = adr, estimate = predicted)
-test_pred <- tibble(predicted = predict(selected_model, hotel_test)) %>%
+test_pred <- tibble(predicted = predict(model_train, hotel_test)) %>%
                           bind_cols(hotel_test)
 train_pred%>%
   kable(digits=3)
@@ -353,7 +360,6 @@ test_pred <- test_pred %>%
   rmse(truth = adr, estimate = predicted)
 test_pred %>%
   kable(digits=3)
-
 ```
 
 To determine the accuracy of the predictive ability of our model, we use the Root Mean Squared Error 
@@ -390,10 +396,14 @@ For future work, we are interested in expanding our analysis to include data fro
 
 # References
 
-
 <div id="refs">
 
-</div>
+</div> \
+
+
+
+
+
 
 
 # Appendix
