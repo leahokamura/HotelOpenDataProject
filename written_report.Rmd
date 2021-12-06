@@ -196,14 +196,9 @@ We are also particularly interested in using the presence of kids (children or b
 
 # Methodology
 
-- Data transformations (if applied)
-- Model Type Justification 
-- Model selection criteria 
-- Handling Interaction Terms 
-- Any other technical choices 
+## Data Processing
 
-It is important to note that there are a few variables in the dataset that do not provide insight to our research question and as a result we will remove from the dataset. First is the category `hotels$country`, due to the fact that every hotel in this subset of the data is located in the U.S., this is a redundant variable. Next, the two variables `hotels$reserved_room_type` and `hotels$assigned_room_type` are both categorical variables that have letters assigned to each room type. However, due to the confidentiality of the customers, the classification of these letters have not been identified by those who collected the data. Therefore, we will be removing these variables from the dataset.
-
+It is important to note that there are a few variables in the dataset that do not provide insight to our research question and as a result we will remove from the dataset. First is the category `hotels$country`, due to the fact that every hotel in this subset of the data is located in the U.S., this is a redundant variable. Next, the variables `hotels$reserved_room_type`, `hotels$assigned_room_type`, `hotels$agent`, `hotels$company` are categorical variables that have codes assigned to their values. However, due to the confidentiality of the customers, the classification of these codes have not been identified by those who collected the data. Therefore, we will be removing these variables from the dataset. In addition to that, we removed `hotels$reservation_status_date` and `hotels$arrival_date_week_number` as we already had variables that tracked day, month, and year. The variables `hotels$previous_cancellations` and `hotels$reservation_status` were also removed as they did not provide relevance in predicting the average daily rate.In addition to removing variables, certain variables such as `hotels$month` as well as `hotels$meal` had to be refactored and cleaned in order to function properly in the linear regression model. 
 
 ```{r}
 
@@ -239,10 +234,8 @@ hotels <- hotels%>%
           meal = factor(meal, levels = c("None", "BB", "HB")))
 ```
 
-As of now, we know we are going to use hotel (Resort Hotel or City Hotel), company, customer_type, stays_in_weekend_nights, stays_in_week_nights, and  meal(type of meal) as predictor variables. We are interested in how the food is served at a hotel and what type of hotel can indicate how much a night in a hotel could cost. As we explore more of the relationships in our dataset, we may add other possible predictor variables as we see fit.
-
-We plan to use multiple linear regression with a variety of combinations of interested predictor variables and their interaction. Based on whether conditions or fit or not or based on the visualization, we believe we may be utilizing logarithmic regression as well. We would also be interested in seeing how stays in the weekend or the weekday may affect the average daily rate for a hotel, and if they differ between the two hotel types, City and Resort hotels.
-
+We will now fit a model using all of the variables form our cleaned dataset. In particular, we are curious in how 
+hotel (Resort Hotel or City Hotel), stays_in_weekend_nights, stays_in_week_nights, the type of meal plan, as well as the time of the reservatuon as predictor variables. As we explore more of the relationships in our dataset, we will be performing selection criterias to find the best model for prediciting the average daily rate of a hotel reservation. We plan to use multiple linear regression with a variety of combinations of interested predictor variables and their interaction. 
 
 ```{r}
 set.seed(12121)
@@ -252,24 +245,27 @@ hotel_test <- testing(hotel_split)
 hotel_test <- hotel_test[!(hotel_test$meal=='Undefined'),]
 rownames(hotel_train) <- NULL
 rownames(hotel_test) <- NULL
-nrow(hotels)
-nrow(hotel_test)
 ```
 
+## Model Selection
 
 ```{r}
 full_model <- lm(adr ~ ., data = hotels)
-#tidy(full_model) %>%
-#  kable(digits = 3)
+tidy(full_model) %>%
+  kable(digits = 3)
+#colnames(hotels)
 ```
+
+The model above is the full model. With such a high number of predictor variables, we believed it would be best to use a backwards model with BIC as our selection criteria. With this, we are able to narrow down our predictor variables to the most significant ones that can be used to draw concrete conclusions as well as predict daily prices for different types of reservations. Additionally, we were specifically interested in how the month of the reservation and the day in the month had an affect on each other. Therefore, we added this interaction term into our model. The final model is displayed in the Results section.
 
 ```{r results = "hide"}
 selected_model <- stats::step(full_model, scope=formula(full_model), direction="backward", k = log(nrow(hotels)))
 ```
+## Model Conditions 
 
 ```{r }
 # Residual + QQ Plots
-autoplot(selected_model, which = c(1,2), colour = "hotel")
+autoplot(selected_model, which = c(1,2))
 ```
 To check that a linear model is applicable to this dataset, we check the following conditions: Linearity, Constant Variance, Normality, and Independence. 
 
@@ -285,33 +281,37 @@ individual hotel bookings can be assumed to be independent.
 
 From this analysis, we conclude that the conditions are met for performing linear regression. 
 
+## Model Diagnostics
+
 ```{r}
 
 autoplot(selected_model, which = 1, ncol =1, colour = 'hotel')
 autoplot(selected_model, which = 3, ncol =1, colour = 'hotel')
 autoplot(selected_model, which = 4, ncol =1, colour = 'hotel')
+```
 
-
+```{r}
 #Leverage 
 
 lev_threshold <- 2 * (16+1) / nrow(hotels) 
 hotel_aug <- augment(selected_model) 
 
 hotel_aug %>%
-filter(.hat > lev_threshold) %>% 
-nrow()
+filter(.hat > lev_threshold)# %>% 
+#nrow()
 
 
 # High Magnitude Residual 
 hotel_aug %>%
-filter(.std.resid < -3 | .std.resid > 3) %>%
-nrow()
+filter(.std.resid < -3 | .std.resid > 3) #%>%
+#nrow()
 
 # Influential Point 
 hotel_aug %>%
-filter(.cooksd > 0.5) %>% 
-nrow()
+filter(.cooksd > 0.5) #%>% 
+#nrow()
 ```
+
 We use leverage and Cook's Distance to identify influential observations in our dataset, and use standardized residuals to identify outliers. 
 
 Leverage is a measure of the distance between an observation's values of the predictor variables and the average values of the predictor variables for the entire data set. We define a high leverage point as having a leverage greater than $ 2(p+1) /n  $, where p is the number of predictors and n is the number of observations. We find 448 observations to be high leverage, and consider them to be
@@ -339,6 +339,8 @@ tidy(model_interact, conf.int =.95) %>%
   kable(digits = 3)
 ```
 
+##Interpretations 
+
 The model provides a number of useful predictors for determining how the average daily rate or price of a hotel is affected by its customization. The first aspect when choosing a hotel may be the type of hotel one would like to visit. In this model we looked at the difference between staying in a hotel located in a city/urban setting versus staying in a resort style hotel. According the model, the coefficient for a resort hotel is -5.430. This can be interpreted as if a guest decides to stay in a resort hotel versus a city hotel, they are expected to pay on average \$5.43 less per day , holding all else constant. Because the p-value is very close to 0, we can also conclude that this is a significant statistic. Therefore, when deciding on a travel destination, it would be beneficial to consider the difference in price of a city or resort hotel. 
 
 Another important factor when planning a trip or booking a hotel is when you would like to travel or stay. The model covers a variety of predictors that involve the timing of a booking. For example, when considering which month to travel in, there is a possibility that depending on the month you book your stay, the average daily rate may be more expensive or less depending on the month. For example, the model identifies that the arrival date of a stay in August has a coefficient of 77.880. This can be interpreted as if a guest decides to book a stay during the month of August, they would be expected to pay on average \$77.88 more per day, holding all else constant. Additionally, according to the model, if a guest stayed in a hotel with an arrival date in April, May, June, July, August, September, October, or November, they would be expected to pay on average a higher daily rate than staying in the month of January. This is proved by the fact that the p-value for each coefficient of these months is approximately 0, and the 95% confidence interval does not include 0 and has both thresholds being positive values. On the other hand, the months of February, March, and December all have fairly large p-values and have 0 fall in the 95% confidence interval. Therefore, we can say that these months are not statistically different from the month of January, meaning that there will not be a significant difference in the average daily rate whether a guest stays in January or February, March, or December.
@@ -350,6 +352,8 @@ Additionally, when looking at the interaction between the day of the month and t
 Another attribute that may effect the daily price of the hotel is the number of guests and more specifically, the number of adults in the reservation. The model gives a coefficient of 21.456 and a p-value of 0 showing this coefficient is statistically significant. Therefore, we can conclude that for every additional adult added to the reservation, the average daily price of a hotel will increase on average \$21.46, holding all else constant. From this, a pretty good estimate can be made about how much the daily rate will change with the number of adults under the reservation. This can similarly be applied to the number of children staying under a reservation. For every additional child added to the reservation, the average daily price of a hotel will increase on average \$32.02, holding all else constant. We can be confident in this interpretation as the p-value is approximately 0 and 0 does not fall in the 95% confidence interval. Therefore, more children under a reservation will result in an increase of the average daily rate. 
 
 Lastly, we will discuss how a meal plan can possibly change the average daily price of a hotel stay. In the variable meal, the baseline is if a guest were to get no meal plan. The coefficient for Bed and Breakfast has a coefficient of 21.739 and a p-value of approximately 0. Therefore, we can say that if one were to choose the meal plan Bed and Breakfast, they would pay on average \$21.74 more than if they did not buy a meal plan. Similarly for a Half Board meal plan (breakfast and one other meal), the guest is expected to pay on average $50.50 more per day for their hotel stay if they were to get the Half Board plan versus no meal plan. This interpretation is supported by the approximately 0 p-value for this coefficient. 
+
+## Predicting
 
 In addition to discussing how the different predictors affect the average daily rate, one can also use the model to predict how much their hotel stay may cost in relation to these factors. For example, we can predict the average daily rate for a guest who had a reservation at a Resort Hotel that was not canceled, had 90 days elapsed between the entering date of the booking into the PMS and their arrival date, had an arrival date of February 26, 2016, stayed for 3 weekend nights, consisted of 2 adults and 3 children, got a Half Board meal plan, booked directly from the hotel, is not a repeated guest, has not had previous bookings canceled, had 0 days in the wait list and had a total of 4 special requests. 
 
@@ -365,22 +369,20 @@ selected_model %>%
 
 Based on the above table, we are 95% confident that the average daily rate for this guest will fall somewhere between \$196.49 and \$224.31. Therefore, we can predict that this guest's reservation will have an average daily rate of about $210.40. This model can be applied to a variety of hypothetical guests and reservations to predict how much one's hotel stay would cost. 
 
-To determine the accuracy of the predictive ability of our model, we use the Root Mean Squared Error 
-on both our training and test datasets below. We find a very similar error between 
-our training and test sets, and find that on average, our predictions differ 
-from the actual value by around $43. 
-
 ```{r}
-#train_pred <- tibble(predicted = predict(model, hotel_train)) %>%
-#                          bind_cols(hotel_train)
-#train_pred %>%
-# rmse(truth = adr, estimate = predicted)
-#test_pred <- tibble(predicted = predict(model, hotel_test)) %>%
-#                          bind_cols(hotel_test)
-#test_pred %>%
-#  rmse(truth = adr, estimate = predicted)
+train_pred <- tibble(predicted = predict(selected_model, hotel_train)) %>%
+                          bind_cols(hotel_train)
+train_pred %>%
+ rmse(truth = adr, estimate = predicted)
+test_pred <- tibble(predicted = predict(selected_model, hotel_test)) %>%
+                          bind_cols(hotel_test)
+test_pred %>%
+  rmse(truth = adr, estimate = predicted)
 ```
 
+To determine the accuracy of the predictive ability of our model, we use the Root Mean Squared Error 
+on both our training and test datasets below. We find a very similar error between 
+our training and test sets. For the training set, the model had an RMSE of \$33.767 and the testing set had an RMSE of \$34.714. Given that the RMSEs for the training and test set are very close, we can conclude that the model is generalizable based on these values. 
 
 # Discussion and Conclusion
 
