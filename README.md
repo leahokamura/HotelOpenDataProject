@@ -1,6 +1,10 @@
-Project title
+Predicting the Cost of Hotel Bookings in the U.S.
 ================
-by LAM-duh
+Team LAM-duh
+
+In this research project, we work to better understand the contributing factors to the average daily rate of hotel rooms in the U.S. To do this, we build models
+using a variety of booking characteristics to predict daily hotel room rates, determine the most significant
+factors, and evaluate our model as a predictive tool.
 
 ## Data Dictionary
 
